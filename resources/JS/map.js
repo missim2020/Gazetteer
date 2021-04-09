@@ -15,16 +15,17 @@ let lng;
 let capital;
 let bordersToDisplay;
 let homeCountry;
+let countryData;
 
-//load map with your current location
+//====load map with your current location====================
+
 navigator.geolocation.getCurrentPosition(function (location) {
   var latlng = new L.LatLng(
     location.coords.latitude,
     location.coords.longitude
   );
-
-  let homeLatitude = location.coords.latitude;
-  let homeLongitude = location.coords.longitude;
+  homeLatitude = location.coords.latitude;
+  homeLongitude = location.coords.longitude;
 
   map = L.map("map").setView(latlng, 7);
 
@@ -81,7 +82,7 @@ navigator.geolocation.getCurrentPosition(function (location) {
     }
   );
 
-  //layer controller
+  //============layer controller=======================================
 
   const baseMaps = {
     osm: osm,
@@ -100,12 +101,8 @@ navigator.geolocation.getCurrentPosition(function (location) {
   L.marker(latlng, { icon: homeIcon }).addTo(map);
 
   // ===Info about the country ===========================
+  
   const countriesList = document.getElementById("countries");
-
-  // fetch("https://restcountries.eu/rest/v2/all")
-  //   .then((res) => res.json())
-  //   .then((data) => initialize(data))
-  //   .catch((err) => console.log("Error:", err));
 
   function initialize(countriesData) {
     countries = countriesData;
@@ -121,12 +118,10 @@ navigator.geolocation.getCurrentPosition(function (location) {
 
     countriesList.innerHTML = options;
 
-    //countriesList.selectedIndex = Math.floor(Math.random()*countriesList.length);
-    // displayCountryInfo(countriesList[countriesList.selectedIndex].value);
   }
-  let countryData 
+
   function displayCountryInfo(countryByAlpha2Code) {
-  countryData = countries.find(
+    countryData = countries.find(
       (country) => country.alpha2Code === countryByAlpha2Code
     );
     document.querySelector("#flag-container img").src = countryData.flag;
@@ -162,11 +157,9 @@ navigator.geolocation.getCurrentPosition(function (location) {
   }
 
   //====show borders of selected country===============================
-  //let selectedCountry,
 
   function handleCountryChange(selectedCountryCode) {
-    // const selectedCountryCode = event.target.value;
-
+    
     let selectedCountry = borders.features.filter((country) => {
       return country.properties.iso_a2 === selectedCountryCode;
     });
@@ -188,7 +181,7 @@ navigator.geolocation.getCurrentPosition(function (location) {
   }
 
   document.getElementById("countries").addEventListener("change", (e) => {
-    //handleCountryChange(e);
+    
     geojson.resetStyle();
     if (bordersToDisplay) {
       bordersToDisplay.clearLayers();
@@ -217,9 +210,8 @@ navigator.geolocation.getCurrentPosition(function (location) {
   }).addTo(map);
 
   function onCountryClick(e) {
-    
     geojson.resetStyle();
-  bordersToDisplay.clearLayers()
+    bordersToDisplay.clearLayers();
     let clickedCountryName = e.target.feature.properties.iso_a2;
 
     let layer = e.target;
@@ -227,28 +219,16 @@ navigator.geolocation.getCurrentPosition(function (location) {
     layer.setStyle({
       weight: 2,
       color: "#00B6BC",
-      //dashArray: "",
       fillColor: "#71D5E4",
     });
 
-  //let countryFlag = countryData.flag
-
-  //console.log(countryFlag)
-
-displayCountryInfo(clickedCountryName);
-exchangeRates();
+    displayCountryInfo(clickedCountryName);
+    exchangeRates();
     wikipedia(clickedCountryName);
     weather(clickedCountryName);
 
-    layer.bindPopup('<h3>'+countryData.name+'</h3>');
-    //layer.bindPopup(e.target.feature.properties.name);
-
-    // if (!L.Browser.ie && !L.Browser.opera) {
-    //    layer.bringToFront();
-    //   }
+    layer.bindPopup("<h3>" + countryData.name + "</h3>");
   }
-
- 
 
   //=====================================================================
 
@@ -265,7 +245,7 @@ exchangeRates();
       },
 
       success: function (result) {
-        console.log(result);
+        //console.log(result);
 
         if (result.status.name == "ok") {
           $("#summary").html(result.data[0].summary);
@@ -297,7 +277,7 @@ exchangeRates();
       },
 
       success: function (result) {
-        console.log(result);
+        //console.log(result);
 
         if (result.status.name == "ok") {
           $("#city").html(result.data.city.name);
@@ -370,7 +350,7 @@ exchangeRates();
       type: "POST",
       dataType: "json",
       success: function (result) {
-        console.log(result);
+        //console.log(result);
 
         if (result.status.name == "ok") {
           $("#date").html(result.data.date);
@@ -419,13 +399,12 @@ exchangeRates();
 
               displayCountryInfo(homeCountry);
               wikipedia();
-              //getWeather;
+              
               weather();
-              //getExchangeRates;
-              //console.log(rates)
+              
               handleCountryChange(homeCountry);
               exchangeRates();
-              //handleCountryChange(selectedCountry)
+              
             })
             .catch((err) => console.log("Error:", err));
         }
@@ -438,19 +417,8 @@ exchangeRates();
       },
     });
   }
-
-  //$(document).ready(onLoad);
-
-  //$(window).on("load", onLoad);
-  $(document).ready(function () {
-    onLoad();
-    testFunc("i work!");
-    //handleCountryChange(m);
-    // displayCountryInfo(homeCountry);
-    // wikipedia();
-    // weather();
-    // exchangeRates();
-  });
+//======================================================================
+  $(document).ready(onLoad);
 
   $("#countries").change(function () {
     exchangeRates();
