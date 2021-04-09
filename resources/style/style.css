@@ -235,3 +235,13 @@ h1 {
   background: transparent;
   width: 0px;
 }
+.leaflet-popup-content-wrapper{
+  background-color: #E4F4F3 !important;
+}
+.leaflet-popup-content{
+  margin:5px !important;
+}
+
+/*.leaflet-popup-tip{
+  background-color: violet;
+}*/

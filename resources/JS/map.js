@@ -6,12 +6,17 @@ $(window).on("load", function () {
 
 //=========================================================
 
-//load map with your current location
-
 let map;
 let homeLatitude;
 let homeLongitude;
+let countries;
+let lat;
+let lng;
+let capital;
+let bordersToDisplay;
+let homeCountry;
 
+//load map with your current location
 navigator.geolocation.getCurrentPosition(function (location) {
   var latlng = new L.LatLng(
     location.coords.latitude,
@@ -23,19 +28,15 @@ navigator.geolocation.getCurrentPosition(function (location) {
 
   map = L.map("map").setView(latlng, 7);
 
-  // let southWest = L.latLng(-90, -180),
-  //         northEast = L.latLng(90, 180),
-  //         bounds = L.latLngBounds(southWest, northEast);
-
-  // let map = L.map('map', {
-  //     attributionControl: false,
-  //     maxZoom: 15,
-  //     minZoom: 1,
-  //     center: bounds.getCenter(),
-  //     zoom: 3,
-  //     maxBounds: bounds,
-  //     maxBoundsViscosity: 0.0
-  // });
+  const geoWorld = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution:
+        "Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC",
+      maxZoom: 16,
+    }
+  );
+  geoWorld.addTo(map);
 
   const osm = L.tileLayer(
     "https://tile.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey=d68d08608ba94b76bfb4e2b1ac603e92",
@@ -46,17 +47,6 @@ navigator.geolocation.getCurrentPosition(function (location) {
       maxZoom: 22,
     }
   );
-  osm.addTo(map);
-
-  const geoWorld = L.tileLayer(
-    "https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",
-    {
-      attribution:
-        "Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC",
-      maxZoom: 16,
-    }
-  );
-  //geoWorld.addTo(map);
 
   const night = L.tileLayer(
     "https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}",
@@ -74,7 +64,6 @@ navigator.geolocation.getCurrentPosition(function (location) {
       tilematrixset: "GoogleMapsCompatible_Level",
     }
   );
-  //night.addTo(map);
 
   const googleStreets = L.tileLayer(
     "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
@@ -84,8 +73,6 @@ navigator.geolocation.getCurrentPosition(function (location) {
     }
   );
 
-  //googleStreets.addTo(map);
-
   const googleSat = L.tileLayer(
     "http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
     {
@@ -93,7 +80,6 @@ navigator.geolocation.getCurrentPosition(function (location) {
       subdomains: ["mt0", "mt1", "mt2", "mt3"],
     }
   );
-  //googleSat.addTo(map);
 
   //layer controller
 
@@ -105,13 +91,6 @@ navigator.geolocation.getCurrentPosition(function (location) {
     "Google Satelite": googleSat,
   };
 
-  // var clouds = L.OWM.clouds({showLegend: false, opacity: 0.5, appId: '7d7aba67b5e4defaefe042a6bd4c3753'});
-  // var city = L.OWM.current({intervall: 15, lang: 'de'});
-
-  //var overlayMaps = { "Clouds": weather };
-
-  //L.control.layers(baseMaps, overlayMaps).addTo(map);
-
   let homeIcon = L.icon({
     iconUrl: "images/home.png",
     iconSize: [40, 40],
@@ -119,100 +98,18 @@ navigator.geolocation.getCurrentPosition(function (location) {
 
   L.control.layers(baseMaps).addTo(map);
   L.marker(latlng, { icon: homeIcon }).addTo(map);
-  // console.log(map);
-  // L.geoJSON(borders).addTo(map);
 
-  //  });
-
-  // var geojsonLayer = new L.GeoJSON.AJAX("countryBorders.geo.json");
-  // geojsonLayer.addTo(map);
-
-  // let geojson = L.geoJSON(borders, {
-  //   style: function (feature) {
-  //     return {
-  //       color: "white",
-  //       fillColor: "green",
-  //     };
-  //   },
-  //   onEachFeature: function (feature, layer) {
-  //     layer.on({
-  //       //click:onCountryClick,
-  //       mouseover: onCountryHighLight,
-  //       mouseout: onCountryMouseOut,
-  //     });
-  //   },
-
-  //   //layer.bindPopup(`<b>Name:</b>`+feature.properties.name)
-
-  //   // style:{
-  //   //   color:'red',
-  //   // }
-  // }).addTo(map);
-
-  // function onCountryHighLight(e) {
-  //   var layer = e.target;
-
-  //   layer.setStyle({
-  //     weight: 2,
-  //     color: "#666",
-  //     dashArray: "",
-  //     fillColor: "red",
-  //   });
-
-  //   if (!L.Browser.ie && !L.Browser.opera) {
-  //     layer.bringToFront();
-  //   }
-
-  //   var countryName = e.target.feature.properties.name;
-  //   var countryCode = e.target.feature.properties.iso_a2;
-  // }
-
-  // Global Variables
+  // ===Info about the country ===========================
   const countriesList = document.getElementById("countries");
-  let countries; // will contain "fetched" data
-  let lat;
-  let lng;
-  let capital;
-
-  //let kuku;
-  // Event Listeners
-  // countriesList.addEventListener("change", event => displayCountryInfo(event.target.value));
-
-  // countriesList.addEventListener("change", newCountrySelection);
-
-  // function newCountrySelection(event) {
-  //   displayCountryInfo(event.target.value);
-  // }
 
   // fetch("https://restcountries.eu/rest/v2/all")
-  // .then(function(res){
-  //   // console.log(res);
-  //   return res.json();
-  // })
-  // .then(function(data){
-  //   // console.log(data);
-  //   initialize(data);
-  // })
-  // .catch(function(err){
-  //   console.log("Error:", err);
-  // });
-
-  fetch("https://restcountries.eu/rest/v2/all")
-    .then((res) => res.json())
-    .then((data) => initialize(data))
-    .catch((err) => console.log("Error:", err));
+  //   .then((res) => res.json())
+  //   .then((data) => initialize(data))
+  //   .catch((err) => console.log("Error:", err));
 
   function initialize(countriesData) {
     countries = countriesData;
     let options = "";
-    // for(let i=0; i<countries.length; i++) {
-    //   options += `<option value="${countries[i].alpha3Code}">${countries[i].name}</option>`;
-    //   // options += `<option value="${countries[i].alpha3Code}">${countries[i].name} (+${countries[i].callingCodes[0]})</option>`;
-    // }
-    // countries.forEach(
-    //   (country) =>
-    //     (options += `<option value="${country.alpha3Code}">${country.name}</option>`)
-    // );
 
     countries.forEach(function (country) {
       if (options == 0) {
@@ -222,23 +119,15 @@ navigator.geolocation.getCurrentPosition(function (location) {
       }
     });
 
-    // document.getElementById("countries").innerHTML = options;
-    // document.querySelector("#countries").innerHTML = options;
     countriesList.innerHTML = options;
-    //console.log(countriesList);
-    //console.log(countriesList.value);
-    // console.log(countriesList.length);
-    // console.log(countriesList.selectedIndex);
-    // console.log(countriesList[10]);
-    // console.log(countriesList[10].value);
-    // console.log(countriesList[10].text);
+
     //countriesList.selectedIndex = Math.floor(Math.random()*countriesList.length);
     // displayCountryInfo(countriesList[countriesList.selectedIndex].value);
   }
-
-  function displayCountryInfo(countryByAlpha3Code) {
-    const countryData = countries.find(
-      (country) => country.alpha2Code === countryByAlpha3Code
+  let countryData 
+  function displayCountryInfo(countryByAlpha2Code) {
+  countryData = countries.find(
+      (country) => country.alpha2Code === countryByAlpha2Code
     );
     document.querySelector("#flag-container img").src = countryData.flag;
     document.querySelector(
@@ -272,25 +161,17 @@ navigator.geolocation.getCurrentPosition(function (location) {
     capital = countryData.capital;
   }
 
-  //show borders of selected country
-  let bordersToDisplay;
-  function handleCountryChange(event) {
-    const selectedCountryCode = event.target.value;
+  //====show borders of selected country===============================
+  //let selectedCountry,
 
-    // const selectedCountry = borders.features.find((country) => {
-    //   return country.properties.iso_a3=== selectedCountryCode;
-    // });
+  function handleCountryChange(selectedCountryCode) {
+    // const selectedCountryCode = event.target.value;
 
-    const selectedCountry = borders.features.filter((country) => {
+    let selectedCountry = borders.features.filter((country) => {
       return country.properties.iso_a2 === selectedCountryCode;
     });
 
-    // const selectedCountryBorders = {
-    //   type: "FeatureCollection",
-    //   features: [selectedCountry],
-    // };
     bordersToDisplay = L.geoJSON(selectedCountry, {
-      //const bordersToDisplay = L.geoJSON(selectedCountryBorders, {
       style: function () {
         return {
           color: "white",
@@ -299,53 +180,81 @@ navigator.geolocation.getCurrentPosition(function (location) {
       },
       onEachFeature: function (_, layer) {
         map.fitBounds(layer.getBounds()); //zoom selected country
-
-        // layer.on({
-        //   //click:onCountryClick,
-        //   //mouseover: onCountryHighLight,
-        //   //mouseout: onCountryMouseOut,
-        // });
       },
     });
-    // if (bordersToDisplay){
-    //   map.removeLayer(bordersToDisplay)
-    // }else{
 
     bordersToDisplay.addTo(map);
-
-    // function onCountryMouseOut(e) {
-    //   bordersToDisplay.resetStyle(e.target);
-    //   //	$("#countryHighlighted").text("No selection");
-
-    //   var countryName = e.target.feature.properties.name;
-    //   var countryCode = e.target.feature.properties.iso_a2;
-    //   //callback when mouse exits a country polygon goes here, for additional actions
-    // }
-
-    // REST API - Info about the selected country
-
     displayCountryInfo(selectedCountryCode);
   }
 
   document.getElementById("countries").addEventListener("change", (e) => {
     //handleCountryChange(e);
-
+    geojson.resetStyle();
     if (bordersToDisplay) {
       bordersToDisplay.clearLayers();
-      handleCountryChange(e);
+      handleCountryChange(e.target.value);
     } else {
-      handleCountryChange(e);
+      handleCountryChange(e.target.value);
       bordersToDisplay.addTo(map);
     }
-
-    //bordersToDisplay.resetStyle()
   });
+
+  //======highlighting country==================================
+
+  let geojson = L.geoJSON(borders, {
+    style: function () {
+      return {
+        color: "transparent",
+        fillColor: "transparent",
+      };
+    },
+
+    onEachFeature: function (_, layer) {
+      layer.on({
+        mousedown: onCountryClick,
+      });
+    },
+  }).addTo(map);
+
+  function onCountryClick(e) {
+    
+    geojson.resetStyle();
+  bordersToDisplay.clearLayers()
+    let clickedCountryName = e.target.feature.properties.iso_a2;
+
+    let layer = e.target;
+
+    layer.setStyle({
+      weight: 2,
+      color: "#00B6BC",
+      //dashArray: "",
+      fillColor: "#71D5E4",
+    });
+
+  //let countryFlag = countryData.flag
+
+  //console.log(countryFlag)
+
+displayCountryInfo(clickedCountryName);
+exchangeRates();
+    wikipedia(clickedCountryName);
+    weather(clickedCountryName);
+
+    layer.bindPopup('<h3>'+countryData.name+'</h3>');
+    //layer.bindPopup(e.target.feature.properties.name);
+
+    // if (!L.Browser.ie && !L.Browser.opera) {
+    //    layer.bringToFront();
+    //   }
+  }
+
+ 
 
   //=====================================================================
 
   // wikipedia link
 
-  $("#countries").change(function () {
+  function wikipedia() {
     $.ajax({
       url: "resources/PHP/wikipedia.php",
       type: "POST",
@@ -372,12 +281,13 @@ navigator.geolocation.getCurrentPosition(function (location) {
         console.log(errorThrown);
       },
     });
-  });
+  }
+
   //=====================================================================
 
   // Weather
 
-  $("#countries").change(function () {
+  function weather() {
     $.ajax({
       url: "resources/PHP/openweather.php",
       type: "POST",
@@ -448,30 +358,22 @@ navigator.geolocation.getCurrentPosition(function (location) {
       }
       document.getElementById("icon").src = "images/" + icon;
     }
-  });
+  }
+
   //===================================================================
 
   //exchange rates
 
-  $("#countries").change(function () {
+  function exchangeRates() {
     $.ajax({
       url: "resources/PHP/exchangeRates.php",
       type: "POST",
       dataType: "json",
-      // data: {
-      //   capital: capital
-
-      // },
-
       success: function (result) {
         console.log(result);
 
         if (result.status.name == "ok") {
-          //$('#exchange').html(JSON.stringify(result['data'], null, 2));
-
           $("#date").html(result.data.date);
-          //$("#exchange-rates").html(result.data.rates);
-          //console.log(result.data.rates)
 
           let html = "";
           for (let rate in result.data.rates) {
@@ -490,10 +392,11 @@ navigator.geolocation.getCurrentPosition(function (location) {
         console.log(errorThrown);
       },
     });
-  });
+  }
+
   //===============================================================
-  let homeCountry;
-  $(document).ready(function() {
+
+  function onLoad() {
     $.ajax({
       url: "resources/PHP/findPlaceNearby.php",
       type: "GET",
@@ -506,19 +409,26 @@ navigator.geolocation.getCurrentPosition(function (location) {
       success: function (result) {
         if (result.status.name == "ok") {
           homeCountry = result.data.geonames[0].countryCode;
-          console.log(homeCountry);
 
-          //document.getElementById("countries").value=homeCountry;
+          fetch("https://restcountries.eu/rest/v2/all")
+            .then((res) => res.json())
+            .then((data) => {
+              initialize(data);
 
-          // $(function(){
-          document.getElementById("countries").value=homeCountry;
-          displayCountryInfo(homeCountry)
-          // })
+              document.getElementById("countries").value = homeCountry;
 
-          //$('#countries').val('GB')
+              displayCountryInfo(homeCountry);
+              wikipedia();
+              //getWeather;
+              weather();
+              //getExchangeRates;
+              //console.log(rates)
+              handleCountryChange(homeCountry);
+              exchangeRates();
+              //handleCountryChange(selectedCountry)
+            })
+            .catch((err) => console.log("Error:", err));
         }
-
-        //document.getElementById('countries').value=homeCountry;
       },
 
       error: function (jqXHR, textStatus, errorThrown) {
@@ -527,5 +437,24 @@ navigator.geolocation.getCurrentPosition(function (location) {
         console.log(errorThrown);
       },
     });
-  })
+  }
+
+  //$(document).ready(onLoad);
+
+  //$(window).on("load", onLoad);
+  $(document).ready(function () {
+    onLoad();
+    testFunc("i work!");
+    //handleCountryChange(m);
+    // displayCountryInfo(homeCountry);
+    // wikipedia();
+    // weather();
+    // exchangeRates();
+  });
+
+  $("#countries").change(function () {
+    exchangeRates();
+    wikipedia();
+    weather();
+  });
 });
