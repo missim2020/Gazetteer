@@ -16,10 +16,17 @@
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
 		integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
 		crossorigin="" />
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+
 	<!--script for map-->
 	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
 		integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
 		crossorigin=""></script>
+
+	<script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
 
 	<!--===JQuery=====================================================-->
 
@@ -47,16 +54,148 @@
 		<div></div>
 		<div></div>
 	</div>
-	<!--========== navigation tab bar=========================================================================================================================================================================-->
 
+	<!--==MAP================================================================-->
+	<div id="map">
+
+		<!--========== navigation tab bar=========================================================================================================================================================================-->
+		<div class="col-6 col-md-12 d-flex justify-content-end">
+			<!--<input id="autocomplete" placeholder="Search for a country">-->
+			<select name="country" id="countries">
+
+			</select>
+		</div>
+
+
+
+		<a data-toggle="modal" href="#tallModal" class="btn btn-light" data-backdrop="static">Info</a>
+
+		<a data-toggle="modal" href="#tallModal2" class="btn btn-light">Weather</a>
+
+		<a data-toggle="modal" href="#tallModal3" class="btn btn-light">Exchange rates</a>
+
+		<div id="tallModal" class="modal modal-wide fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="btn-light close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<!--<h4 class="modal-title">Modal title</h4>-->
+					</div>
+					<div class="modal-body">
+						<div id="main-container" class="cont">
+							<div class="flex">
+								<div class="country-name">
+									<h2 id="country-name"></h2>
+								</div>
+								<div id="flag-container">
+									<img src="" alt="" />
+								</div>
+							</div>
+							<div id="info-container">
+								<p><b>Capital:</b> <span id="capital"></span></p>
+								<p><b>Dialing Code:</b> <span id="dialing-code"></span></p>
+								<p><b>Population:</b> <span id="population"></span></p>
+								<p><b>Currencies:</b> <span id="currencies"></span></p>
+								<p><b>Region:</b> <span id="region"></span></p>
+								<p><b>Area:</b> <span id="area"></span></p>
+								<p><b>Time Zone:</b> <span id="timeZone"></span></p>
+								<p><b>Borders:</b> <span id="borders"></span></p>
+								<p><b>Languages:</b> <span id="languages"></span></p>
+								<p class="summary">
+									<u><b>Summary:</b></u><br />
+									<span id="summary"></span>
+								</p>
+								<a id="link" href="" target="_blank"></a>
+							</div>
+						</div>
+					</div>
+					<!--<div class="modal-footer">
+		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  <button type="button" class="btn btn-primary">Save changes</button>
+		</div>-->
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<div id="tallModal2" class="modal modal-wide fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="btn-light close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<!--<h4 class="modal-title">Modal title</h4>-->
+					</div>
+					<div class="modal-body">
+						<div id="weather">
+							<h2>Weather in <span id="city"></span></h2>
+							<h3>Today</h3>
+							<div id="weatherIcon">
+								<img id="icon" src="" />
+							</div>
+							<p><b><span id="description"></span></b></p>
+							<p><b>temperature:</b> <span id="temp"></span></p>
+							<p><b>Pressure:</b> <span id="pressure"></span></p>
+							<p><b>Humidity:</b> <span id="humidity"></span></p>
+							<p><b>wind Speed:</b> <span id="wind_speed"></span></p>
+							<p><b>claudiness:</b> <span id="clouds"></span></p>
+
+							<h3>Weather Forecast</h3>
+							<table class="table">
+								<thead>
+									<tr>
+										<th>Time</th>
+										<th>Weather</th>
+										<th>Temp</th>
+									</tr>
+								</thead>
+								<tbody id="forecast"></tbody>
+							</table>
+						</div>
+					</div>
+					<!--<div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>-->
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<div id="tallModal3" class="modal modal-wide fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="btn-light close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<!--<h4 class="modal-title">Modal title</h4>-->
+						<div class="modal-body">
+							<p>One fine body&hellip;</p>
+						</div>
+						<!--<div class="modal-footer">
+		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  <button type="button" class="btn btn-primary">Save changes</button>
+		</div>-->
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+
+
+
+
+
+		</div>
+		<!--===============================================================-->
+
+
+		<!--
 	<div class="col-12 col-md-5 col-lg-4" id="navBar">
 		<nav class="navbar col-12 p-2 justify-content-center">
 			<div class="col-6 col-md-12 justify-content-center heading">
 				<h1>Gazetteer</h1>
 			</div>
-			<div class="col-6 col-md-12 d-flex justify-content-center">
-				<!--<input id="autocomplete" placeholder="Search for a country">-->
-				<select name="country" id="countries">
+			<div class="col-6 col-md-12 d-flex justify-content-center">-->
+		<!--<input id="autocomplete" placeholder="Search for a country">-->
+		<!--<select name="country" id="countries">
 
 				</select>
 			</div>
@@ -151,20 +290,32 @@
 			</div>
 		</div>
 	</div>
+-->
+		<!--=====================================================================================================================================================================================================-->
+		<script src="./resources/JS/airports.js"></script>
+		<script src="./resources/JS/map.js"></script>
+		
+		<script src="./resources/JS/functions.js"></script>
 
-	<!--=====================================================================================================================================================================================================-->
-	<!--==MAP================================================================-->
-	<div id="map"></div>
-	<!--===============================================================-->
+		<!--<script src="./resources/JSON/countryBorders.geo.json"></script>-->
+		<script src="./resources/JS/countryBorders.js"></script>
 
-	<script src="./resources/JS/map.js"></script>
-	<script src="./resources/JS/countryBorders.js"></script>
-
-	<!--=====Bootstrap JS===========-->
+		<!--=====Bootstrap JS===========-->
+		<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+			integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous">
+		</script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+			integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous">
+		</script>
+		<!--
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous">
 	</script>
-	<!--==================================================================-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+	-->
+
+		<!--==================================================================-->
 </body>
 
 </html>

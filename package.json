@@ -1,0 +1,22 @@
+{
+  "name": "my-gazetteer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/missim2020/Gazetteer.git"
+  },
+  "author": "Simona",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/missim2020/Gazetteer/issues"
+  },
+  "homepage": "https://github.com/missim2020/Gazetteer#readme",
+  "dependencies": {
+    "leaflet.markercluster": "^1.5.0"
+  }
+}
