@@ -11,7 +11,9 @@ let countryData;
 let latlng;
 let countriesList;
 let geojson;
-
+// let kuku
+// let sel;
+// let text
 
 //====get location ==================================
 function getLocation() {
@@ -141,6 +143,7 @@ function handleCountryChange(selectedCountryCode) {
 
   bordersToDisplay.addTo(map);
   displayCountryInfo(selectedCountryCode);
+  
 }
 
 document.getElementById("countries").addEventListener("change", (e) => {
@@ -273,6 +276,40 @@ function weather() {
 
 //   //===============================================================
 
+//=== Points of interest==========================================
+
+// function poi() {
+//   $.ajax({
+//     url: "resources/PHP/POI.php",
+//     type: "POST",
+//     dataType: "json",
+//     // data: {
+//     //   lat: lat,
+//     //   lng: lng,
+//     // },
+
+//     success: function (result) {
+//       console.log(result);
+
+//       //if (result.status.name == "ok") {
+
+//         // $("#summary").html(result.data[0].summary);
+//         // $("#link")
+//         //   .html(result.data[0].wikipediaUrl)
+//         //   .attr("href", "https://" + result.data[0].wikipediaUrl);
+//       //}
+//     },
+
+//     error: function (jqXHR, textStatus, errorThrown) {
+//       console.log(jqXHR);
+//       console.log(textStatus);
+//       console.log(errorThrown);
+//     },
+//   });
+// }
+
+//=================================================================
+
 function onLoad() {
   $.ajax({
     url: "resources/PHP/findPlaceNearby.php",
@@ -286,6 +323,7 @@ function onLoad() {
     success: function (result) {
       if (result.status.name == "ok") {
         homeCountry = result.data.geonames[0].countryCode;
+        
 
         console.log(result);
 
@@ -297,6 +335,7 @@ function onLoad() {
             document.getElementById("countries").value = homeCountry;
 
             displayCountryInfo(homeCountry);
+            //markerClusters()
             wikipedia();
             weather();
             handleCountryChange(homeCountry);
@@ -323,6 +362,7 @@ $(document).ready(function () {
   onLoad();
   //getLocation();
   showModal();
+  
 });
 
 $("#countries").change(function () {
@@ -380,27 +420,83 @@ function showError(error) {
 
 // getLocation();
 //=================marker Clusters=================
+// function markerClusters(){
+//   let icon = L.icon({
+//       iconUrl: "images/icon1.png",
+//       iconSize: [40, 40],
+//     });
+  
+//   let markerClusters = L.markerClusterGroup();
+//   // kuku = markers.country
+//   // console.log(kuku)
+//   sel = document.getElementById("countries")
+//  text = sel.options[sel.selectedIndex].text
 
-// let icon = L.icon({
-//   iconUrl: "images/icon1.png",
-//   iconSize: [20, 20],
-// });
+// //let text="Germany"
+//  console.log(text)  
+//   //console.log(markers)
+  
+//   console.log(markers[0].country)
 
-// //let markerClusters = L.markerClusterGroup();
+// for (var i = 0; i < markers.length; i++) {
+
+
+//       if (markers[i].country == text) {
+//         var popup = markers[i].name + "<br/><b>City:</b> " + markers[i].city; // +
+//         // '<br/><b>ICAO:</b> ' + markers[i].icao +
+//         // '<br/><b>Altitude:</b> ' + Math.round( markers[i].alt * 0.3048 ) + ' m' +
+//         // '<br/><b>Timezone:</b> ' + markers[i].tz;
+  
+//         let m = L.marker([markers[i].lat, markers[i].lon], {
+//           icon: icon,
+//         }).bindPopup(popup);
+  
+//         markerClusters.addLayer(m);
+//       }
+  
+//       map.addLayer(markerClusters);
+//     }
+  
+//   }
+
+  // function markerClusters(){
+
+  // let icon = L.icon({
+  //     iconUrl: "images/icon1.png",
+  //     iconSize: [40, 40],
+  //   });
+  // //let airport = new L.LayerGroup()
+  // let markerClusters = L.markerClusterGroup();
+  
+  //   for (var i = 0; i < markers.length; i++) {
+      
+  //       var popup = markers[i].name + "<br/><b>City:</b> " + markers[i].city; // +
+  //       // '<br/><b>ICAO:</b> ' + markers[i].icao +
+  //       // '<br/><b>Altitude:</b> ' + Math.round( markers[i].alt * 0.3048 ) + ' m' +
+  //       // '<br/><b>Timezone:</b> ' + markers[i].tz;
+  
+  //       let m = L.marker([markers[i].lat, markers[i].lon], {
+  //         icon: icon,
+  //       }).bindPopup(popup);
+  
+  //       let kuku =L.layerGroup([m])
+        
+  //       //airport.addLayer(m)
+  //       //markerClusters.addLayer(m);
+      
+  
+  //     //map.addLayer(airport);
+
+  //     //markerClusters.checkIn(m)
+  //  let overlayMaps={
+
+  //  }
+
+    //}
+  //   var mcg = L.markerClusterGroup.layerSupport().addTo(map);
+  //   mcg.checkIn([
+  //     airport
+  // ]);
+
+  //}
  
-// for ( var i = 0; i < markers.length; ++i )
-// {
-//   // var popup = markers[i].name +
-//   //             '<br/>' + markers[i].city +
-//   //             '<br/><b>IATA/FAA:</b> ' + markers[i].iata_faa +
-//   //             '<br/><b>ICAO:</b> ' + markers[i].icao +
-//   //             '<br/><b>Altitude:</b> ' + Math.round( markers[i].alt * 0.3048 ) + ' m' +
-//   //             '<br/><b>Timezone:</b> ' + markers[i].tz;
- 
-//   var m = L.marker( [markers[i].latitude_deg, markers[i].longitude_deg], {icon: icon} )
-//                   //.bindPopup( popup );
- 
-//   //markerClusters.addLayer( m );
-// }
- 
-// //map.addLayer( markerClusters );
