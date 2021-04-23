@@ -11,9 +11,8 @@ let countryData;
 let latlng;
 let countriesList;
 let geojson;
-// let kuku
-// let sel;
-// let text
+let currency;
+let markerCluster;
 
 //====get location ==================================
 function getLocation() {
@@ -27,29 +26,36 @@ function getLocation() {
 getLocation();
 
 // ===Info about the country ===========================
-
-function initialize(countriesData) {
+function listOfCountries() {
   countriesList = document.getElementById("countries");
-
-  countries = countriesData;
-
   let options = "";
 
-  countries.forEach(function (country) {
+  borders.features.map(function (feature) {
     if (options == 0) {
       options += `<option selected="true" disabled>Choose a Country</option>`;
     } else {
-      options += `<option value="${country.alpha2Code}">${country.name}</option>`;
+      options += `<option value="${feature.properties.iso_a2}">${feature.properties.name}</option>`;
     }
   });
 
   countriesList.innerHTML = options;
+
+  var firstOption = $("#countries option:first");
+  var nextOptions = $("#countries option:not(:first)").sort(function (a, b) {
+    return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
+  });
+  $("#countries").html(nextOptions).prepend(firstOption);
+}
+
+function initialize(countriesData) {
+  countries = countriesData;
 }
 
 function displayCountryInfo(countryByAlpha2Code) {
   countryData = countries.find(
     (country) => country.alpha2Code === countryByAlpha2Code
   );
+  // console.log(countryData);
   document.querySelector("#flag-container img").src = countryData.flag;
   document.querySelector(
     "#flag-container img"
@@ -78,6 +84,7 @@ function displayCountryInfo(countryByAlpha2Code) {
   lat = countryData.latlng[0];
   lng = countryData.latlng[1];
   capital = countryData.capital;
+  currency = countryData.currencies[0].code;
 }
 
 //======highlighting the country==================================
@@ -115,11 +122,16 @@ function onCountryClick(e) {
   });
 
   displayCountryInfo(clickedCountryName);
-  //exchangeRates();
+  exchangeRates();
   wikipedia(clickedCountryName);
   weather(clickedCountryName);
 
-  //layer.bindPopup("<h3>" + countryData.name + "</h3>");
+  if (markerCluster) {
+    markerCluster.clearLayers();
+    markerClusters();
+  } else {
+    markerClusters();
+  }
 }
 
 //====show borders of selected country===============================
@@ -143,7 +155,6 @@ function handleCountryChange(selectedCountryCode) {
 
   bordersToDisplay.addTo(map);
   displayCountryInfo(selectedCountryCode);
-  
 }
 
 document.getElementById("countries").addEventListener("change", (e) => {
@@ -244,69 +255,44 @@ function weather() {
 }
 //==== exchange rates =============================================
 
-//   function exchangeRates() {
-//     $.ajax({
-//       //url: "resources/PHP/exchangeRates.php",
-//       type: "POST",
-//       dataType: "json",
-//       success: function (result) {
-//         //console.log(result);
+function exchangeRates() {
+  $.ajax({
+    url: "resources/PHP/exchangeRates.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      base: currency,
+    },
 
-//         if (result.status.name == "ok") {
-//           $("#date").html(result.data.date);
+    success: function (result) {
+      //console.log(result);
 
-//           let html = "";
-//           for (let rate in result.data.rates) {
-//             html += "<p>";
+      if (result.status.name == "ok") {
+        $("#currencyName").html(currency);
+        $("#date").html(result.data.date);
 
-//             html += `${rate}: ${result.data.rates[rate]}`;
-//             html += "</p>";
-//           }
-//           $("#exchange-rates").html(html);
-//         }
-//       },
+        let html = "";
+        for (let rate in result.data.rates) {
+          html += "<tr>";
+          html += "<td>";
+          html += rate;
+          html += "</td>";
+          html += "<td>";
+          html += result.data.rates[rate];
+          html += "</td>";
+          html += "</tr>";
+        }
+        $("#exchange-rates").html(html);
+      }
+    },
 
-//       error: function (jqXHR, textStatus, errorThrown) {
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//       },
-//     });
-//   }
-
-//   //===============================================================
-
-//=== Points of interest==========================================
-
-// function poi() {
-//   $.ajax({
-//     url: "resources/PHP/POI.php",
-//     type: "POST",
-//     dataType: "json",
-//     // data: {
-//     //   lat: lat,
-//     //   lng: lng,
-//     // },
-
-//     success: function (result) {
-//       console.log(result);
-
-//       //if (result.status.name == "ok") {
-
-//         // $("#summary").html(result.data[0].summary);
-//         // $("#link")
-//         //   .html(result.data[0].wikipediaUrl)
-//         //   .attr("href", "https://" + result.data[0].wikipediaUrl);
-//       //}
-//     },
-
-//     error: function (jqXHR, textStatus, errorThrown) {
-//       console.log(jqXHR);
-//       console.log(textStatus);
-//       console.log(errorThrown);
-//     },
-//   });
-// }
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+      console.log(textStatus);
+      console.log(errorThrown);
+    },
+  });
+}
 
 //=================================================================
 
@@ -323,23 +309,37 @@ function onLoad() {
     success: function (result) {
       if (result.status.name == "ok") {
         homeCountry = result.data.geonames[0].countryCode;
-        
 
-        console.log(result);
+        //console.log(result);
+        listOfCountries();
 
-        fetch("https://restcountries.eu/rest/v2/all")
+        fetch("resources/PHP/getCountryInfo.php")
           .then((res) => res.json())
-          .then((data) => {
-            initialize(data);
+          .then((result) => {
+            initialize(result.data);
+            //console.log(data)
 
             document.getElementById("countries").value = homeCountry;
 
             displayCountryInfo(homeCountry);
-            //markerClusters()
             wikipedia();
             weather();
-            handleCountryChange(homeCountry);
-            //exchangeRates();
+            exchangeRates();
+
+            if (bordersToDisplay) {
+              bordersToDisplay.clearLayers();
+              handleCountryChange(homeCountry);
+            } else {
+              handleCountryChange(homeCountry);
+              bordersToDisplay.addTo(map);
+            }
+
+            if (markerCluster) {
+              markerCluster.clearLayers();
+              markerClusters(homeCountry);
+            } else {
+              markerClusters();
+            }
           })
           .catch((err) => console.log("Error:", err));
       }
@@ -358,39 +358,35 @@ function onLoad() {
 
 $(document).ready(function () {
   preloader();
-
   onLoad();
-  //getLocation();
   showModal();
-  
 });
 
 $("#countries").change(function () {
-  //exchangeRates();
+  exchangeRates();
   wikipedia();
   weather();
+  if (markerCluster) {
+    markerCluster.clearLayers();
+    markerClusters();
+  } else {
+    markerClusters();
+  }
 });
 
 //===================================================================
 
 function showLocation(location) {
-  //navigator.geolocation.getCurrentPosition(function (location) {
   latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
   homeLatitude = location.coords.latitude;
   homeLongitude = location.coords.longitude;
-
-  //map = L.map("map")
 
   map = L.map("map", {
     zoomControl: false,
   }).setView(latlng, 7);
 
   setMap();
-
-  //displayCountryInfo()
-  //handleCountryChange()
   highlightingCountry();
-  //onCountryClick()
   onLoad();
 }
 
@@ -408,7 +404,6 @@ function showError(error) {
     setMap();
     highlightingCountry();
     onLoad();
-
   } else if (error.POSITION_UNAVAILABLE) {
     alert("Location information is unavailable.");
   } else if (error.TIMEOUT) {
@@ -417,86 +412,29 @@ function showError(error) {
     alert("An unknown error occurred.");
   }
 }
-
-// getLocation();
 //=================marker Clusters=================
-// function markerClusters(){
-//   let icon = L.icon({
-//       iconUrl: "images/icon1.png",
-//       iconSize: [40, 40],
-//     });
-  
-//   let markerClusters = L.markerClusterGroup();
-//   // kuku = markers.country
-//   // console.log(kuku)
-//   sel = document.getElementById("countries")
-//  text = sel.options[sel.selectedIndex].text
+function markerClusters() {
+  let icon = L.icon({
+    iconUrl: "images/icon1.png",
+    iconSize: [40, 40],
+  });
 
-// //let text="Germany"
-//  console.log(text)  
-//   //console.log(markers)
-  
-//   console.log(markers[0].country)
+  markerCluster = L.markerClusterGroup();
 
-// for (var i = 0; i < markers.length; i++) {
+  sel = document.getElementById("countries");
+  text = sel.options[sel.selectedIndex].text;
 
+  for (var i = 0; i < markers2.length; i++) {
+    if (markers2[i].country == text) {
+      var popup = markers2[i].name + "<br/><b>City:</b> " + markers2[i].city;
 
-//       if (markers[i].country == text) {
-//         var popup = markers[i].name + "<br/><b>City:</b> " + markers[i].city; // +
-//         // '<br/><b>ICAO:</b> ' + markers[i].icao +
-//         // '<br/><b>Altitude:</b> ' + Math.round( markers[i].alt * 0.3048 ) + ' m' +
-//         // '<br/><b>Timezone:</b> ' + markers[i].tz;
-  
-//         let m = L.marker([markers[i].lat, markers[i].lon], {
-//           icon: icon,
-//         }).bindPopup(popup);
-  
-//         markerClusters.addLayer(m);
-//       }
-  
-//       map.addLayer(markerClusters);
-//     }
-  
-//   }
+      let m = L.marker([markers2[i].lat, markers2[i].lon], {
+        icon: icon,
+      }).bindPopup(popup);
 
-  // function markerClusters(){
+      markerCluster.addLayer(m);
+    }
 
-  // let icon = L.icon({
-  //     iconUrl: "images/icon1.png",
-  //     iconSize: [40, 40],
-  //   });
-  // //let airport = new L.LayerGroup()
-  // let markerClusters = L.markerClusterGroup();
-  
-  //   for (var i = 0; i < markers.length; i++) {
-      
-  //       var popup = markers[i].name + "<br/><b>City:</b> " + markers[i].city; // +
-  //       // '<br/><b>ICAO:</b> ' + markers[i].icao +
-  //       // '<br/><b>Altitude:</b> ' + Math.round( markers[i].alt * 0.3048 ) + ' m' +
-  //       // '<br/><b>Timezone:</b> ' + markers[i].tz;
-  
-  //       let m = L.marker([markers[i].lat, markers[i].lon], {
-  //         icon: icon,
-  //       }).bindPopup(popup);
-  
-  //       let kuku =L.layerGroup([m])
-        
-  //       //airport.addLayer(m)
-  //       //markerClusters.addLayer(m);
-      
-  
-  //     //map.addLayer(airport);
-
-  //     //markerClusters.checkIn(m)
-  //  let overlayMaps={
-
-  //  }
-
-    //}
-  //   var mcg = L.markerClusterGroup.layerSupport().addTo(map);
-  //   mcg.checkIn([
-  //     airport
-  // ]);
-
-  //}
- 
+    map.addLayer(markerCluster);
+  }
+}

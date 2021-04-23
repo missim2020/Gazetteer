@@ -7,11 +7,7 @@ error_reporting(E_ALL);
 
 	
 	$url='http://api.geonames.org/findNearbyJSON?lat='.$_REQUEST['homeLatitude'].'&lng='.$_REQUEST['homeLongitude'].'&username=missim';
-	//$url='http://api.geonames.org/findNearbyJSON?lat=51.546535&lng=-0.08228&username=missim';
-
-	
-
-    
+	   
 
 		$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

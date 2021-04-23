@@ -4,10 +4,6 @@ ini_set('display_errors','on');
 error_reporting(E_ALL);
 
 	$executionStartTime = microtime(true) / 1000;
-
-	//$url='http://api.geonames.org/findNearbyWikipediaJSON?postalcode=8775&country=CH&radius=10&username=missim';
-	
-    //$url='http://api.geonames.org/findNearbyWikipediaJSON?country=CH&username=missim';
     
     $url='http://api.geonames.org/findNearbyWikipediaJSON?lat=' .$_REQUEST['lat'].'&lng='.$_REQUEST['lng'].'&username=missim';
 

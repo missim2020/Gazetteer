@@ -8,12 +8,7 @@ error_reporting(E_ALL);
 	
 	$url='http://api.openweathermap.org/data/2.5/forecast?q=' .$_REQUEST['capital'].'&units=metric&appid=4c62aa507d9cb0b2f9a4360b1b429d32';
 
-    //$url='http://api.openweathermap.org/data/2.5/forecast?lat'.$_REQUEST['lat'].'&lon='.$_REQUEST['lng'].'&appid=4c62aa507d9cb0b2f9a4360b1b429d32';
-    
-    //$url='http://api.geonames.org/findNearbyWikipediaJSON?lat=' .$_REQUEST['lat'].'&lng='.$_REQUEST['lng'].'&username=missim';
-
-
-		$ch = curl_init();
+    		$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_URL,$url);

@@ -5,14 +5,10 @@ error_reporting(E_ALL);
 
 	$executionStartTime = microtime(true) / 1000;
 
-	
-
-	//$url='http://api.geonames.org/findNearbyJSON?lat=51.546535&lng=-0.08228&username=missim';
-
-	//$url='http://api.exchangeratesapi.io/v1/latest?access_key=6cf0d8f2f45b21a94ed1772ba9901513';
+		
+	$url='http://api.exchangeratesapi.io/v1/latest?base='.$_REQUEST['base'].'&access_key=6cf0d8f2f45b21a94ed1772ba9901513';
 
     
-
 		$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

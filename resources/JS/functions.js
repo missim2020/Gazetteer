@@ -1,4 +1,3 @@
-const L = require('leaflet')
 //===preloader================================
 function preloader() {
   $("#preloader").delay(2000).fadeOut("slow");
@@ -88,38 +87,11 @@ function setMap() {
   L.control
     .zoom({
       position: "bottomright",
-    })
-    .addTo(map);
-
+    }).addTo(map);
+    
   
 }
-  
-// function markerClusters(){
-// let icon = L.icon({
-//     iconUrl: "images/icon1.png",
-//     iconSize: [40, 40],
-//   });
-
-// let markerClusters = L.markerClusterGroup();
-
-//   for (var i = 0; i < markers.length; i++) {
-//     if (markers[i].type == "Airports") {
-//       var popup = markers[i].name + "<br/><b>City:</b> " + markers[i].city; // +
-//       // '<br/><b>ICAO:</b> ' + markers[i].icao +
-//       // '<br/><b>Altitude:</b> ' + Math.round( markers[i].alt * 0.3048 ) + ' m' +
-//       // '<br/><b>Timezone:</b> ' + markers[i].tz;
-
-//       let m = L.marker([markers[i].lat, markers[i].lon], {
-//         icon: icon,
-//       }).bindPopup(popup);
-
-//       markerClusters.addLayer(m);
-//     }
-
-//     map.addLayer(markerClusters);
-//   }
-
-// }
+ 
 //============================weather icon======================
 
 function getWeatherIcon(iconId) {

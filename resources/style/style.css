@@ -1,3 +1,6 @@
+html {
+  font-size: 16px;
+}
 
 /*=======preloader===========*/
 
@@ -8,6 +11,7 @@
   width: 100%;
   z-index: 9998;
 }
+
 #preloader {
   color: official;
   height: 80px;
@@ -17,10 +21,12 @@
   z-index: 9999;
   width: 80px;
 }
+
 #preloader div {
   animation: lds-spinner 1.2s linear infinite;
   transform-origin: 40px 40px;
 }
+
 #preloader div:after {
   content: " ";
   border-radius: 20%;
@@ -32,14 +38,17 @@
   left: 37px;
   width: 6px;
 }
+
 #preloader div:nth-child(1) {
   animation-delay: -1.1s;
   transform: rotate(0deg);
 }
+
 #preloader div:nth-child(2) {
   animation-delay: -1s;
   transform: rotate(30deg);
 }
+
 #preloader div:nth-child(3) {
   animation-delay: -0.9s;
   transform: rotate(60deg);
@@ -49,88 +58,58 @@
   animation-delay: -0.8s;
   transform: rotate(90deg);
 }
+
 #preloader div:nth-child(5) {
   animation-delay: -0.7s;
   transform: rotate(120deg);
 }
+
 #preloader div:nth-child(6) {
   animation-delay: -0.6s;
   transform: rotate(150deg);
 }
+
 #preloader div:nth-child(7) {
   animation-delay: -0.5s;
   transform: rotate(180deg);
 }
+
 #preloader div:nth-child(8) {
   animation-delay: -0.4s;
   transform: rotate(210deg);
 }
+
 #preloader div:nth-child(9) {
   animation-delay: -0.3s;
   transform: rotate(240deg);
 }
+
 #preloader div:nth-child(10) {
   animation-delay: -0.2s;
   transform: rotate(270deg);
 }
+
 #preloader div:nth-child(11) {
   animation-delay: -0.1s;
   transform: rotate(300deg);
 }
+
 #preloader div:nth-child(12) {
   animation-delay: 0s;
   transform: rotate(330deg);
 }
+
 @keyframes lds-spinner {
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }
 }
 
 /*================================================================*/
-
-.modal.modal-wide .modal-dialog {
-  width: 50%;
-}
-.modal-wide .modal-body {
-  overflow-y: auto;
-}
-
-/* irrelevant styling 
-body { text-align: center; }
-body p { 
-  max-width: 400px; 
-  margin: 20px auto; 
-}
-#tallModal .modal-body p { margin-bottom: 900px }
-
-*/
-.modal-backdrop {
-  background-color: rgba(0,0,0,.0001) !important;
-}
-
-
-
-body {
-  /*display: block;*/
-
-  font-family: "Montserrat", sans-serif !important;
-  margin: 0;
-  padding: 0;
-}
-
-a.btn{
- position: relative;
- margin-top: 1%;
- margin-right: 0.5%;
- left: 1%;
- float: left;
- z-index: 9997;
-}
-
 
 html,
 body,
@@ -139,67 +118,93 @@ body,
   width: 100vw;
 }
 
-.modal-header{
-  padding: 5px !important;
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, .0001) !important;
 }
-.modal-content{
-  margin-top: 50%;
+
+body {
+  font-family: "Montserrat", sans-serif !important;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  font-size: 1.1rem !important;
+}
+
+a.btn {
+  position: relative;
+  margin-top: 1%;
+  margin-right: 0.5%;
+  left: 1%;
+  float: left;
+  z-index: 9997;
+}
+
+.modal.modal-wide .modal-dialog {
+  width: 50%;
+}
+
+.modal-wide .modal-body {
+  overflow-y: auto;
+}
+
+.modal-header {
+  padding: 0.3125rem !important;
+}
+
+.modal-header .close {
+  padding: 0.5rem !important;
+  margin: 0 0 0 auto !important;
+}
+
+.modal-content {
+  margin-top: 15%;
+  width: 55vh;
 }
 
 .modal-dialog {
- margin: 3% 3% !important;
+  margin: 3% 3% !important;
 }
 
 #countries {
-margin-top:1.5%;
-margin-right: 10%;
-border-radius: 8px;
-width: 25%;
-height: 30px;
-z-index: 9997;
+  border-radius: 8px;
+  float: right;
+  font-size: 1rem;
+  height: 1.875rem;
+  margin-top: 1.5%;
+  margin-right: 10%;
+  width: 50%;
+  z-index: 9997;
 }
 
-.col-6{
+.col-6 {
   float: right !important;
-  width: 50% !important;
+  width: 60% !important;
+  z-index: 9997;
 }
-
-/*
-nav {
-  background-color: #71d5e4;
-  height: 30%;
-  width: 100%;
-}
-
-#navBar {
-  text-align: center;
-}
-
-h1 {
-  color: #e4f4f3;
-}*/
-
 
 .cont {
   height: 60vh;
   margin: 0 auto;
-  overflow: auto;
   width: 95%;
-}
-
-.cont::-webkit-scrollbar {
-  background: transparent;
-  width: 0px;
 }
 
 .flex {
   align-items: center;
   display: flex;
   justify-content: space-evenly;
- 
+
 }
+
 #country-name {
   margin: 0 auto;
+  text-align: center;
+}
+
+#info-container {
+  margin-top: 10px;
+
 }
 
 #flag-container {
@@ -208,106 +213,129 @@ h1 {
   height: 20%;
   width: 30%;
 }
+
 #flag-container img {
   display: block;
   width: 100%;
 }
 
 .summary {
-
   text-align: justify;
+}
+
+#link {
+  display: block;
+  font-size: 1.1rem;
+  text-align: left;
+  padding-bottom: 15px;
 }
 
 #weather {
   text-align: center;
   height: 60vh;
-  margin-top: 20px;
- /* overflow: auto;*/
-}
-
-#weather::-webkit-scrollbar {
-  background: transparent;
-  width: 0px;
+  margin-top: 1.25rem;
 }
 
 #icon {
-  margin: 15px 0;
+  margin: 1rem 0;
   width: 25%;
 }
-/*
+
 #exchange {
-  margin-top: 20px;
-}
-#exchange-rates {
-  height: 55vh;
-  overflow: auto;
+  height: 60vh;
+  text-align: center;
 }
 
-#exchange-rates::-webkit-scrollbar {
-  background: transparent;
-  width: 0px;
+.table {
+  text-align: center;
 }
-.leaflet-popup-content-wrapper{
+
+.leaflet-popup-content-wrapper {
   background-color: #E4F4F3 !important;
 }
-.leaflet-popup-content{
-  margin:5px !important;
+
+.leaflet-popup-content {
+  margin: 5px !important;
 }
-*/
-@media (max-width: 830px) and (orientation: portrait) {
+
+@media (max-width: 830px) {
+  .leaflet-control-layers {
+    position: relative;
+    top: 80px
+  }
+
+
+  .modal.modal-wide .modal-dialog {
+    width: 60%;
+  }
+
+  .modal-header .close {
+    padding: 0.2rem !important;
+  }
+
   p {
-    
-    font-size: 14px !important;
+    font-size: 0.9rem !important;
   }
 
-  /*h1,
-  h2,
-  h3 {
-    font-size: 16px !important;
-  }*/
   .col-6 {
-    width: 100% !important;
-  }
- 
-  #countries {
-  margin-right: 100px;
-    width: 70% !important;
+    float: left !important;
+    min-width: 100% !important;
+    padding-left: 0.1rem !important;
   }
 
-  .modal-content{
+  #countries {
+    width: 80% !important;
+  }
+
+  .modal-content {
     margin-top: 50%;
+
   }
-  .modal-body{
-padding: 0.5rem !important;
+
+  .modal-body {
+    padding: 0.5rem !important;
   }
-.flex{
-  display: grid;
-}
-  #flag-container{
-width: 100%;
-height: auto;
+
+  .flex {
+    display: grid;
   }
-  .country-name{
+
+  #flag-container {
+    height: auto;
+    width: 100%;
+
+  }
+
+  .country-name {
     text-align: center;
   }
-  
-#info-container{
-  margin-top: 0.5rem;
-}
-/*
-  #myTab {
-    clear: both;
+
+  h2 {
+    font-size: 1.3rem !important;
   }
 
-  .heading {
-    margin-top: 50px;
+  h3 {
+    font-size: 1.1rem !important;
   }
-*/
+
+  #weather {
+    margin-top: 0;
+  }
+
+  #info-container {
+    margin-top: 0.5rem;
+
+  }
+
   .table {
-    font-size: 11px;
+    font-size: 0.8rem;
   }
 
-  .leaflet-control {
-    font-size: 5px !important;
+  .table td,
+  .table th {
+    padding: 0.3rem !important;
+    vertical-align: middle !important;
+
   }
+
 }
