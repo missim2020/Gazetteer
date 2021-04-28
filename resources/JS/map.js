@@ -2,16 +2,11 @@ let map;
 let homeLatitude;
 let homeLongitude;
 let countries;
-let lat;
-let lng;
-let capital;
 let bordersToDisplay;
 let homeCountry;
 let countryData;
 let latlng;
-let countriesList;
 let geojson;
-let currency;
 let markerCluster;
 let options;
 let sel;
@@ -33,7 +28,7 @@ getLocation();
 
 function listOfCountries() {
   $.getJSON("resources/PHP/borders.php", function (data) {
-    countriesList = document.getElementById("countries");
+    const countriesList = document.getElementById("countries");
     options = "";
 
     data.features.map(function (feature) {
@@ -89,11 +84,12 @@ function displayCountryInfo(countryByAlpha2Code) {
     .filter((l) => l.name)
     .map((l) => l.name);
 
-  lat = countryData.latlng[0];
-  lng = countryData.latlng[1];
-  capital = countryData.capital;
-  currency = countryData.currencies[0].code;
-  
+    return {
+      lat: countryData.latlng[0],
+      lng: countryData.latlng[1],
+      capital: countryData.capital,
+      currency: countryData.currencies[0].code
+    }
 }
 
 //====show borders of selected country===============================
@@ -117,9 +113,10 @@ function handleCountryChange(selectedCountryCode) {
     });
 
     bordersToDisplay.addTo(map);
-    displayCountryInfo(selectedCountryCode);
-    weather()
-    wikipedia();
+    const { currency, capital, lat, lng } = displayCountryInfo(selectedCountryCode);
+    weather(capital)
+    wikipedia(lat, lng);
+    exchangeRates(currency)
   });
 }
 
@@ -156,8 +153,9 @@ function highlightingCountry() {
   });
 }
 
-let clickedCountryName;
 function onCountryClick(e) {
+  let clickedCountryName;
+
   geojson.resetStyle();
   bordersToDisplay.clearLayers();
   clickedCountryName = e.target.feature.properties.iso_a2;
@@ -173,10 +171,10 @@ function onCountryClick(e) {
     fillColor: "#71D5E4",
   });
 
-  displayCountryInfo(clickedCountryName);
-  exchangeRates();
-  wikipedia(clickedCountryName);
-  weather(clickedCountryName);
+  const { currency, capital, lat, lng} = displayCountryInfo(clickedCountryName);
+  exchangeRates(currency);
+  wikipedia(lat, lng);
+  weather(capital);
 
   if (markerCluster) {
     markerCluster.clearLayers();
@@ -188,14 +186,14 @@ function onCountryClick(e) {
 
 //==== wikipedia link =========================================
 
-function wikipedia() {
+function wikipedia(lat, lng) {
   $.ajax({
     url: "resources/PHP/wikipedia.php",
     type: "POST",
     dataType: "json",
     data: {
-      lat: lat,
-      lng: lng,
+      lat,
+      lng
     },
 
     success: function (result) {
@@ -219,13 +217,13 @@ function wikipedia() {
 
 // ==== Weather =========================================
 
-function weather() {
+function weather(capital) {
   $.ajax({
     url: "resources/PHP/openweather.php",
     type: "POST",
     dataType: "json",
     data: {
-      capital: capital,
+      capital,
     },
 
     success: function (result) {
@@ -273,7 +271,7 @@ function weather() {
 }
 //==== exchange rates =============================================
 
-function exchangeRates() {
+function exchangeRates(currency) {
   $.ajax({
     url: "resources/PHP/exchangeRates.php",
     type: "POST",
@@ -339,10 +337,10 @@ function onLoad() {
 
             document.getElementById("countries").value = homeCountry;
 
-            displayCountryInfo(homeCountry);
-            wikipedia();
-            weather();
-            exchangeRates();
+            const { currency, capital, lat, lng } = displayCountryInfo(homeCountry);
+            wikipedia(lat, lng);
+            weather(capital);
+            exchangeRates(currency);
             //handleCountryChange(homeCountry)
 
             if (bordersToDisplay) {
@@ -382,7 +380,7 @@ $(document).ready(function () {
 });
 
 $("#countries").change(function () {
-  exchangeRates();
+  //exchangeRates();
   //wikipedia();
   //weather();
   if (markerCluster) {
