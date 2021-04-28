@@ -13,6 +13,7 @@ let countriesList;
 let geojson;
 let currency;
 let markerCluster;
+let options;
 
 //====get location ==================================
 function getLocation() {
@@ -28,24 +29,28 @@ getLocation();
 // ===Info about the country ===========================
 function listOfCountries() {
   countriesList = document.getElementById("countries");
-  let options = "";
+  options = "";
 
-  borders.features.map(function (feature) {
-    if (options == 0) {
-      options += `<option selected="true" disabled>Choose a Country</option>`;
-    } else {
-      options += `<option value="${feature.properties.iso_a2}">${feature.properties.name}</option>`;
-    }
+  $.getJSON("resources/PHP/borders.php", function (data) {
+    data.features.map(function (feature) {
+      //console.log(feature.properties.iso_a2)
+      if (options == 0) {
+        options += `<option selected="true" disabled>Choose a Country</option>`;
+      } else {
+        options += `<option value="${feature.properties.iso_a2}">${feature.properties.name}</option>`;
+      }
+    });
+
+    countriesList.innerHTML = options;
+
+    var firstOption = $("#countries option:first");
+    var nextOptions = $("#countries option:not(:first)").sort(function (a, b) {
+      return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
+    });
+    $("#countries").html(nextOptions).prepend(firstOption);
   });
-
-  countriesList.innerHTML = options;
-
-  var firstOption = $("#countries option:first");
-  var nextOptions = $("#countries option:not(:first)").sort(function (a, b) {
-    return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
-  });
-  $("#countries").html(nextOptions).prepend(firstOption);
 }
+
 
 function initialize(countriesData) {
   countries = countriesData;
@@ -87,22 +92,68 @@ function displayCountryInfo(countryByAlpha2Code) {
   currency = countryData.currencies[0].code;
 }
 
-//======highlighting the country==================================
-function highlightingCountry() {
-  geojson = L.geoJSON(borders, {
+
+//====show borders of selected country===============================
+let selectedCountry;
+function handleCountryChange(selectedCountryCode) {
+  $.getJSON("resources/PHP/borders.php", function (data) {
+    selectedCountry = data.features.filter((country) => {
+      return country.properties.iso_a2 === selectedCountryCode;
+    });
+ 
+
+  bordersToDisplay = L.geoJSON(selectedCountry, {
     style: function () {
       return {
-        color: "transparent",
-        fillColor: "transparent",
+        color: "white",
+        fillColor: "green",
       };
     },
-
     onEachFeature: function (_, layer) {
-      layer.on({
-        mousedown: onCountryClick,
-      });
+      map.fitBounds(layer.getBounds()); //zoom selected country
     },
-  }).addTo(map);
+  });
+ 
+  bordersToDisplay.addTo(map);
+  displayCountryInfo(selectedCountryCode);
+  
+});
+}
+
+//
+document.getElementById("countries").addEventListener("change", (e) => {
+  geojson.resetStyle();
+  if (bordersToDisplay) {
+  
+    bordersToDisplay.clearLayers();
+    handleCountryChange(e.target.value);
+  } else {
+    handleCountryChange(e.target.value);
+    bordersToDisplay.addTo(map);
+  }
+
+});
+
+
+//======highlighting the country==================================
+function highlightingCountry() {
+  $.getJSON("resources/PHP/borders.php", function (data) {
+    geojson = L.geoJSON(data, {
+      
+      style: function () {
+        return {
+          color: "transparent",
+          fillColor: "transparent",
+        };
+      },
+
+      onEachFeature: function (_, layer) {
+        layer.on({
+          mousedown: onCountryClick,
+        });
+      },
+    }).addTo(map);
+  });
 }
 
 function onCountryClick(e) {
@@ -133,40 +184,6 @@ function onCountryClick(e) {
     markerClusters();
   }
 }
-
-//====show borders of selected country===============================
-
-function handleCountryChange(selectedCountryCode) {
-  let selectedCountry = borders.features.filter((country) => {
-    return country.properties.iso_a2 === selectedCountryCode;
-  });
-
-  bordersToDisplay = L.geoJSON(selectedCountry, {
-    style: function () {
-      return {
-        color: "white",
-        fillColor: "green",
-      };
-    },
-    onEachFeature: function (_, layer) {
-      map.fitBounds(layer.getBounds()); //zoom selected country
-    },
-  });
-
-  bordersToDisplay.addTo(map);
-  displayCountryInfo(selectedCountryCode);
-}
-
-document.getElementById("countries").addEventListener("change", (e) => {
-  geojson.resetStyle();
-  if (bordersToDisplay) {
-    bordersToDisplay.clearLayers();
-    handleCountryChange(e.target.value);
-  } else {
-    handleCountryChange(e.target.value);
-    bordersToDisplay.addTo(map);
-  }
-});
 
 //==== wikipedia link =========================================
 
@@ -297,6 +314,7 @@ function exchangeRates() {
 //=================================================================
 
 function onLoad() {
+
   $.ajax({
     url: "resources/PHP/findPlaceNearby.php",
     type: "GET",
@@ -309,10 +327,10 @@ function onLoad() {
     success: function (result) {
       if (result.status.name == "ok") {
         homeCountry = result.data.geonames[0].countryCode;
-
+             
         //console.log(result);
         listOfCountries();
-
+      
         fetch("resources/PHP/getCountryInfo.php")
           .then((res) => res.json())
           .then((result) => {
@@ -325,15 +343,17 @@ function onLoad() {
             wikipedia();
             weather();
             exchangeRates();
-
-            if (bordersToDisplay) {
-              bordersToDisplay.clearLayers();
-              handleCountryChange(homeCountry);
-            } else {
-              handleCountryChange(homeCountry);
-              bordersToDisplay.addTo(map);
-            }
-
+            handleCountryChange(homeCountry)
+          
+         
+            // if (bordersToDisplay) {
+            //   bordersToDisplay.clearLayers();
+            //   handleCountryChange(homeCountry);
+            // } else {
+            //   handleCountryChange(homeCountry);
+            //   bordersToDisplay.addTo(map);
+            // }
+            
             if (markerCluster) {
               markerCluster.clearLayers();
               markerClusters(homeCountry);
@@ -360,6 +380,7 @@ $(document).ready(function () {
   preloader();
   onLoad();
   showModal();
+  
 });
 
 $("#countries").change(function () {
@@ -413,6 +434,7 @@ function showError(error) {
   }
 }
 //=================marker Clusters=================
+
 function markerClusters() {
   let icon = L.icon({
     iconUrl: "images/icon1.png",
@@ -424,17 +446,20 @@ function markerClusters() {
   sel = document.getElementById("countries");
   text = sel.options[sel.selectedIndex].text;
 
-  for (var i = 0; i < markers2.length; i++) {
-    if (markers2[i].country == text) {
-      var popup = markers2[i].name + "<br/><b>City:</b> " + markers2[i].city;
+  $.getJSON("resources/PHP/airports.php", function (data) {
+        for (var i = 0; i < data.length; i++) {
+      
+      if (data[i].country == text) {
+        var popup = data[i].name + "<br/><b>City:</b> " + data[i].city;
 
-      let m = L.marker([markers2[i].lat, markers2[i].lon], {
-        icon: icon,
-      }).bindPopup(popup);
+        let m = L.marker([data[i].lat, data[i].lon], {
+          icon: icon,
+        }).bindPopup(popup);
 
-      markerCluster.addLayer(m);
+        markerCluster.addLayer(m);
+      }
+
+      map.addLayer(markerCluster);
     }
-
-    map.addLayer(markerCluster);
-  }
-}
+  });
+} 
