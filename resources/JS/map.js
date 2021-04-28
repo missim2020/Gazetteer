@@ -14,6 +14,9 @@ let geojson;
 let currency;
 let markerCluster;
 let options;
+let sel;
+let text;
+let selectedCountry;
 
 //====get location ==================================
 function getLocation() {
@@ -27,11 +30,12 @@ function getLocation() {
 getLocation();
 
 // ===Info about the country ===========================
-function listOfCountries() {
-  countriesList = document.getElementById("countries");
-  options = "";
 
+function listOfCountries() {
   $.getJSON("resources/PHP/borders.php", function (data) {
+    countriesList = document.getElementById("countries");
+    options = "";
+
     data.features.map(function (feature) {
       //console.log(feature.properties.iso_a2)
       if (options == 0) {
@@ -51,7 +55,6 @@ function listOfCountries() {
   });
 }
 
-
 function initialize(countriesData) {
   countries = countriesData;
 }
@@ -60,7 +63,7 @@ function displayCountryInfo(countryByAlpha2Code) {
   countryData = countries.find(
     (country) => country.alpha2Code === countryByAlpha2Code
   );
-  // console.log(countryData);
+  //console.log(countryData);
   document.querySelector("#flag-container img").src = countryData.flag;
   document.querySelector(
     "#flag-container img"
@@ -90,41 +93,40 @@ function displayCountryInfo(countryByAlpha2Code) {
   lng = countryData.latlng[1];
   capital = countryData.capital;
   currency = countryData.currencies[0].code;
+  
 }
 
-
 //====show borders of selected country===============================
-let selectedCountry;
+
 function handleCountryChange(selectedCountryCode) {
   $.getJSON("resources/PHP/borders.php", function (data) {
     selectedCountry = data.features.filter((country) => {
       return country.properties.iso_a2 === selectedCountryCode;
     });
- 
 
-  bordersToDisplay = L.geoJSON(selectedCountry, {
-    style: function () {
-      return {
-        color: "white",
-        fillColor: "green",
-      };
-    },
-    onEachFeature: function (_, layer) {
-      map.fitBounds(layer.getBounds()); //zoom selected country
-    },
+    bordersToDisplay = L.geoJSON(selectedCountry, {
+      style: function () {
+        return {
+          color: "white",
+          fillColor: "green",
+        };
+      },
+      onEachFeature: function (_, layer) {
+        map.fitBounds(layer.getBounds()); //zoom selected country
+      },
+    });
+
+    bordersToDisplay.addTo(map);
+    displayCountryInfo(selectedCountryCode);
+    weather()
+    wikipedia();
   });
- 
-  bordersToDisplay.addTo(map);
-  displayCountryInfo(selectedCountryCode);
-  
-});
 }
 
 //
 document.getElementById("countries").addEventListener("change", (e) => {
   geojson.resetStyle();
   if (bordersToDisplay) {
-  
     bordersToDisplay.clearLayers();
     handleCountryChange(e.target.value);
   } else {
@@ -134,12 +136,10 @@ document.getElementById("countries").addEventListener("change", (e) => {
 
 });
 
-
 //======highlighting the country==================================
 function highlightingCountry() {
   $.getJSON("resources/PHP/borders.php", function (data) {
     geojson = L.geoJSON(data, {
-      
       style: function () {
         return {
           color: "transparent",
@@ -156,10 +156,11 @@ function highlightingCountry() {
   });
 }
 
+let clickedCountryName;
 function onCountryClick(e) {
   geojson.resetStyle();
   bordersToDisplay.clearLayers();
-  let clickedCountryName = e.target.feature.properties.iso_a2;
+  clickedCountryName = e.target.feature.properties.iso_a2;
 
   document.getElementById("countries").value = clickedCountryName;
   showModal();
@@ -314,7 +315,6 @@ function exchangeRates() {
 //=================================================================
 
 function onLoad() {
-
   $.ajax({
     url: "resources/PHP/findPlaceNearby.php",
     type: "GET",
@@ -327,10 +327,10 @@ function onLoad() {
     success: function (result) {
       if (result.status.name == "ok") {
         homeCountry = result.data.geonames[0].countryCode;
-             
+
         //console.log(result);
         listOfCountries();
-      
+
         fetch("resources/PHP/getCountryInfo.php")
           .then((res) => res.json())
           .then((result) => {
@@ -343,17 +343,16 @@ function onLoad() {
             wikipedia();
             weather();
             exchangeRates();
-            handleCountryChange(homeCountry)
-          
-         
-            // if (bordersToDisplay) {
-            //   bordersToDisplay.clearLayers();
-            //   handleCountryChange(homeCountry);
-            // } else {
-            //   handleCountryChange(homeCountry);
-            //   bordersToDisplay.addTo(map);
-            // }
-            
+            //handleCountryChange(homeCountry)
+
+            if (bordersToDisplay) {
+              bordersToDisplay.clearLayers();
+              handleCountryChange(homeCountry);
+            } else {
+              handleCountryChange(homeCountry);
+              //bordersToDisplay.addTo(map);
+            }
+
             if (markerCluster) {
               markerCluster.clearLayers();
               markerClusters(homeCountry);
@@ -380,13 +379,12 @@ $(document).ready(function () {
   preloader();
   onLoad();
   showModal();
-  
 });
 
 $("#countries").change(function () {
   exchangeRates();
-  wikipedia();
-  weather();
+  //wikipedia();
+  //weather();
   if (markerCluster) {
     markerCluster.clearLayers();
     markerClusters();
@@ -447,8 +445,7 @@ function markerClusters() {
   text = sel.options[sel.selectedIndex].text;
 
   $.getJSON("resources/PHP/airports.php", function (data) {
-        for (var i = 0; i < data.length; i++) {
-      
+    for (var i = 0; i < data.length; i++) {
       if (data[i].country == text) {
         var popup = data[i].name + "<br/><b>City:</b> " + data[i].city;
 
@@ -462,4 +459,4 @@ function markerClusters() {
       map.addLayer(markerCluster);
     }
   });
-} 
+}
