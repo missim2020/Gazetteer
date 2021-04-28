@@ -3,15 +3,10 @@ let homeLatitude;
 let homeLongitude;
 let countries;
 let bordersToDisplay;
-let homeCountry;
-let countryData;
 let latlng;
 let geojson;
 let markerCluster;
 let options;
-let sel;
-let text;
-let selectedCountry;
 
 //====get location ==================================
 function getLocation() {
@@ -55,7 +50,7 @@ function initialize(countriesData) {
 }
 
 function displayCountryInfo(countryByAlpha2Code) {
-  countryData = countries.find(
+  let countryData = countries.find(
     (country) => country.alpha2Code === countryByAlpha2Code
   );
   //console.log(countryData);
@@ -96,7 +91,7 @@ function displayCountryInfo(countryByAlpha2Code) {
 
 function handleCountryChange(selectedCountryCode) {
   $.getJSON("resources/PHP/borders.php", function (data) {
-    selectedCountry = data.features.filter((country) => {
+    let selectedCountry = data.features.filter((country) => {
       return country.properties.iso_a2 === selectedCountryCode;
     });
 
@@ -200,10 +195,11 @@ function wikipedia(lat, lng) {
       //console.log(result);
 
       if (result.status.name == "ok") {
-        $("#summary").html(result.data[0].summary);
+        const countryInfo = result.data[0]
+        $("#summary").html(countryInfo ? countryInfo.summary : "-");
         $("#link")
-          .html(result.data[0].wikipediaUrl)
-          .attr("href", "https://" + result.data[0].wikipediaUrl);
+          .html(countryInfo ? countryInfo.wikipediaUrl : "-")
+          .attr("href", countryInfo ? "https://" + countryInfo.wikipediaUrL : "#");
       }
     },
 
@@ -324,7 +320,7 @@ function onLoad() {
 
     success: function (result) {
       if (result.status.name == "ok") {
-        homeCountry = result.data.geonames[0].countryCode;
+       let homeCountry = result.data.geonames[0].countryCode;
 
         //console.log(result);
         listOfCountries();
@@ -439,8 +435,8 @@ function markerClusters() {
 
   markerCluster = L.markerClusterGroup();
 
-  sel = document.getElementById("countries");
-  text = sel.options[sel.selectedIndex].text;
+  let sel = document.getElementById("countries");
+  let text = sel.options[sel.selectedIndex].text;
 
   $.getJSON("resources/PHP/airports.php", function (data) {
     for (var i = 0; i < data.length; i++) {
