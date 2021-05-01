@@ -116,7 +116,7 @@ body,
 #map {
   height: 100%;
   width: 100vw;
-}
+  }
 
 .modal-backdrop {
   background-color: rgba(0, 0, 0, .0001) !important;
@@ -138,7 +138,7 @@ a.btn {
   margin-right: 0.5%;
   left: 1%;
   float: left;
-  z-index: 9997;
+   z-index: 9997;
 }
 
 .modal.modal-wide .modal-dialog {
@@ -147,6 +147,8 @@ a.btn {
 
 .modal-wide .modal-body {
   overflow-y: auto;
+  overflow-wrap: break-word;
+  
 }
 
 .modal-header {
@@ -204,6 +206,7 @@ a.btn {
 
 #info-container {
   margin-top: 10px;
+  /* max-width: 90%; */
 
 }
 

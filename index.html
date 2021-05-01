@@ -19,7 +19,7 @@
 	<title>Gazetteer</title>
 </head>
 
-<body>
+<body >
 	<!--=====preloader=========================-->
 	<div id="overlayer"></div>
 	<div id="preloader">
@@ -44,13 +44,14 @@
 			<select name="country" id="countries"></select>
 		</div>
 
-		<a data-toggle="modal" href="#tallModal" class="btn btn-light" data-backdrop="static">Info</a>
 
-		<a data-toggle="modal" href="#tallModal2" class="btn btn-light">Weather</a>
+		<a  data-toggle="modal" data-target="#tallModal" id="btn1" class="btn btn-light kuku" >Info</a>
 
-		<a data-toggle="modal" href="#tallModal3" class="btn btn-light">Exchange rates</a>
+		<a  data-toggle="modal" data-target="#tallModal2" id="btn2" class="btn btn-light kuku">Weather</a>
 
-		<div id="tallModal" class="modal modal-wide fade">
+		<a  data-toggle="modal" data-target="#tallModal3" id="btn3" class="btn btn-light kuku">Exchange rates</a>
+
+		<div id="tallModal" class="modal modal-wide fade kuku2" tabindex="-1" >
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -86,15 +87,16 @@
 							</div>
 						</div>
 					</div>
+					
 				</div>
 			</div>
 		</div>
 
-		<div id="tallModal2" class="modal modal-wide fade">
+		<div id="tallModal2" class="modal modal-wide fade" tabindex="-1" >
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="btn-light close" data-dismiss="modal" aria-hidden="true">
+						<button type="button" class="btn-light close" data-dismiss="modal" aria-hidden="true" >
 							&times;
 						</button>
 					</div>
@@ -131,11 +133,11 @@
 			</div>
 		</div>
 
-		<div id="tallModal3" class="modal modal-wide fade">
+		<div id="tallModal3" class="modal modal-wide fade" tabindex="-1" > 
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="btn-light close" data-dismiss="modal" aria-hidden="true">
+						<button type="button" class="btn-light close" data-dismiss="modal" aria-hidden="true" >
 							&times;
 						</button>
 					</div>
@@ -162,10 +164,10 @@
 	</div>
 
 	<!--=====================================================================================================================================================================================================-->
-	
-	<script src="./resources/JS/map.js"></script>
+<script src="./vendors/Bootstrap/bootstrap.bundle.js"></script>	
+		<script src="./resources/JS/map.js"></script>
 	<script src="./resources/JS/functions.js"></script>
-	<script src="./vendors/Bootstrap/bootstrap.bundle.js"></script>
+
 	<!--==================================================================-->
 </body>
 

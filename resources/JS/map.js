@@ -22,16 +22,18 @@ getLocation();
 // ===Info about the country ===========================
 
 function listOfCountries() {
-  $.getJSON("resources/PHP/borders.php", function (data) {
+
+  $.getJSON("resources/PHP/listOfCountries.php", function (data) {
+    //console.log(data)
     const countriesList = document.getElementById("countries");
     options = "";
-
-    data.features.map(function (feature) {
+    
+    data.map(function (feature) {
       //console.log(feature.properties.iso_a2)
       if (options == 0) {
         options += `<option selected="true" disabled>Choose a Country</option>`;
       } else {
-        options += `<option value="${feature.properties.iso_a2}">${feature.properties.name}</option>`;
+        options += `<option value="${feature.code}">${feature.name}</option>`;
       }
     });
 
@@ -43,6 +45,30 @@ function listOfCountries() {
     });
     $("#countries").html(nextOptions).prepend(firstOption);
   });
+
+
+
+  // $.getJSON("resources/PHP/borders.php", function (data) {
+  //   const countriesList = document.getElementById("countries");
+  //   options = "";
+
+  //   data.features.map(function (feature) {
+  //     //console.log(feature.properties.iso_a2)
+  //     if (options == 0) {
+  //       options += `<option selected="true" disabled>Choose a Country</option>`;
+  //     } else {
+  //       options += `<option value="${feature.properties.iso_a2}">${feature.properties.name}</option>`;
+  //     }
+  //   });
+
+  //   countriesList.innerHTML = options;
+
+  //   var firstOption = $("#countries option:first");
+  //   var nextOptions = $("#countries option:not(:first)").sort(function (a, b) {
+  //     return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
+  //   });
+  //   $("#countries").html(nextOptions).prepend(firstOption);
+  // });
 }
 
 function initialize(countriesData) {
@@ -89,6 +115,13 @@ function displayCountryInfo(countryByAlpha2Code) {
 
 //====show borders of selected country===============================
 
+
+
+
+
+
+
+
 function handleCountryChange(selectedCountryCode) {
   $.getJSON("resources/PHP/borders.php", function (data) {
     let selectedCountry = data.features.filter((country) => {
@@ -109,9 +142,9 @@ function handleCountryChange(selectedCountryCode) {
 
     bordersToDisplay.addTo(map);
     const { currency, capital, lat, lng } = displayCountryInfo(selectedCountryCode);
-    weather(capital)
+    //weather(capital)
     wikipedia(lat, lng);
-    exchangeRates(currency)
+    //exchangeRates(currency)
   });
 }
 
@@ -156,7 +189,7 @@ function onCountryClick(e) {
   clickedCountryName = e.target.feature.properties.iso_a2;
 
   document.getElementById("countries").value = clickedCountryName;
-  showModal();
+  // showModal();
 
   let layer = e.target;
 
@@ -167,9 +200,9 @@ function onCountryClick(e) {
   });
 
   const { currency, capital, lat, lng} = displayCountryInfo(clickedCountryName);
-  exchangeRates(currency);
+  //exchangeRates(currency);
   wikipedia(lat, lng);
-  weather(capital);
+  //weather(capital);
 
   if (markerCluster) {
     markerCluster.clearLayers();
@@ -335,8 +368,8 @@ function onLoad() {
 
             const { currency, capital, lat, lng } = displayCountryInfo(homeCountry);
             wikipedia(lat, lng);
-            weather(capital);
-            exchangeRates(currency);
+            //weather(capital);
+            //exchangeRates(currency);
             //handleCountryChange(homeCountry)
 
             if (bordersToDisplay) {
@@ -372,8 +405,79 @@ function onLoad() {
 $(document).ready(function () {
   preloader();
   onLoad();
-  showModal();
-});
+});  
+// Get the modal
+var modal = document.getElementById('tallModal');
+var modal2 = document.getElementById('tallModal2');
+var modal3 = document.getElementById('tallModal3');
+var body = document.querySelector('body')
+
+// Get the button that opens the modal
+var btn1 = document.getElementById("btn1")
+var btn2 = document.getElementById("btn2");
+var btn3 = document.getElementById("btn3")
+
+// $('#tallModal').on('shown.bs.modal', function (e) {
+//   $('body').removeClass('modal-open');
+//   $('#tallModal2').removeAttr("style").hide();
+//   $('#tallModal3').removeAttr("style").hide();
+
+//   //$('#tallModal2').addClass('modal-open');
+// })
+
+// $('#tallModal2').on('shown.bs.modal', function (e) {
+//   $('body').removeClass('modal-open');
+//   $('#tallModal').removeAttr("style").hide();
+//   $('#tallModal3').removeAttr("style").hide();
+  
+//   //$('#tallModal2').addClass('modal-open');
+// })
+
+// $('#tallModal3').on('shown.bs.modal', function (e) {
+//   $('body').removeClass('modal-open');
+//   //$('#tallModal2').addClass('modal-open');
+//   $('#tallModal').removeAttr("style").hide();
+//   $('#tallModal2').removeAttr("style").hide();
+// })
+
+// $('#allModal').on('hidden.bs.modal', function (e) {
+//   $('#tallModal2').removeClass('modal-open');
+// })
+
+
+
+
+
+
+btn1.onclick = function() {
+  // modal.style.display = "block";
+  modal2.style.display = "none";
+  // modal2.classList.remove = "show";
+  modal3.style.display = "none";
+}
+
+btn2.onclick = function() {
+  // modal2.style.display = "block";
+  modal.style.display = "none";
+    // body.classList.remove("mumu");
+    modal3.style.display = "none";
+
+ 
+
+  }
+
+btn3.onclick = function() {
+  // modal3.style.display = "block";
+  modal.style.display = "none";
+  modal2.style.display = "none";
+}
+
+  
+  
+  
+  //showModal();
+  //hideLoadingModal();
+
 
 $("#countries").change(function () {
   //exchangeRates();
@@ -439,11 +543,12 @@ function markerClusters() {
   let text = sel.options[sel.selectedIndex].text;
 
   $.getJSON("resources/PHP/airports.php", function (data) {
+
     for (var i = 0; i < data.length; i++) {
       if (data[i].country == text) {
         var popup = data[i].name + "<br/><b>City:</b> " + data[i].city;
 
-        let m = L.marker([data[i].lat, data[i].lon], {
+        let m = L.marker([data[i].lat, data[i].lng], {
           icon: icon,
         }).bindPopup(popup);
 

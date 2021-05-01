@@ -5,10 +5,11 @@ function preloader() {
 }
 
 //===modal===========================================
-function showModal() {
-  $("#tallModal").modal("show");
-}
-$("#countries").on("click", showModal);
+// function showModal() {
+//   $("#tallModal").modal("show");
+// }
+// $("#countries").on("click", showModal);
+
 
 //===Set the Map=============================================
 
