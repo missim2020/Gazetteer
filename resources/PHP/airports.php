@@ -11,6 +11,10 @@
 
 //  echo $json_encoded;
 
+$text= $_POST['text'];
+
+//echo($text);
+
 
  $filename = 'airports23.json';
 
@@ -18,19 +22,33 @@
  
  $json_decoded=json_decode($airports,true);
  
+
+ 
  $airports_list=[];
- foreach ($json_decoded as $feature) {
-    
-     $airport['country'] = $feature['country']; 
-     $airport['lat'] = $feature['lat'];
+ $airport;
+ //foreach($json_decoded as $key=>$value)
+foreach ($json_decoded as $feature) {
+    $airport['lat'] = $feature['lat'];
      $airport['lng'] = $feature['lon'];
      $airport['name'] = $feature['name'];
      $airport['city'] = $feature['city'];
+     $airport['country'] = $feature['country']; 
+  
+     if($feature['country']===$text){
+      //$airport=$feature;
+    array_push($airports_list, $airport);
+    
+  }//else{
+    //echo("erorr");
+ // }
+   
+     
  
-     array_push($airports_list, $airport);
+     
  
  };
  $json_encoded = json_encode($airports_list);
+ //$json_encoded = json_encode($airport);
   
   echo $json_encoded;
 
