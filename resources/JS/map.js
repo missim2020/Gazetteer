@@ -374,7 +374,7 @@ $(document).ready(function () {
 $("#countries").change(function (e) {
   putMarkerCluster();
 
-  //geojson.resetStyle();
+  geojson.resetStyle();
   if (bordersToDisplay) {
     bordersToDisplay.clearLayers();
     handleCountryChange(e.target.value);
