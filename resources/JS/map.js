@@ -333,6 +333,13 @@ function onLoad() {
             //console.log(data)
 
             document.getElementById("countries").value = homeCountry;
+            
+            const { currency, capital, lat, lng } = displayCountryInfo(
+              homeCountry
+            );
+            wikipedia(lat, lng);
+            weather(capital);
+            exchangeRates(currency);
 
            geojson.resetStyle();
             if (bordersToDisplay) {
