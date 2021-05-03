@@ -18,8 +18,7 @@ foreach ($json_decoded['features'] as $feature) {
 
 };
 $json_encoded = json_encode($country_list);
- //file_put_contents($filename, $country_list);
-
+ 
  echo $json_encoded;
 
 

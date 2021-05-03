@@ -4,13 +4,6 @@ function preloader() {
   $("#overlayer").delay(2000).fadeOut("slow");
 }
 
-//===modal===========================================
-// function showModal() {
-//   $("#tallModal").modal("show");
-// }
-// $("#countries").on("click", showModal);
-
-
 //===Set the Map=============================================
 
 function setMap() {
@@ -88,11 +81,17 @@ function setMap() {
   L.control
     .zoom({
       position: "bottomright",
-    }).addTo(map);
-    
+    })
+    .addTo(map);
+
+
+  }
+
   
-}
- 
+
+
+
+
 //============================weather icon======================
 
 function getWeatherIcon(iconId) {
@@ -116,4 +115,48 @@ function getWeatherIcon(iconId) {
   }
   document.getElementById("icon").src = "images/" + icon;
 }
-//=================================================================
+//======== put marker clusters =============================================
+function putMarkerCluster() {
+  if (markerCluster) {
+    markerCluster.clearLayers();
+    markerClusters();
+  } //else {
+  //markerClusters();
+  //}
+}
+
+//=====  modals ==========================================================
+
+var modal = document.getElementById("tallModal");
+var modal2 = document.getElementById("tallModal2");
+var modal3 = document.getElementById("tallModal3");
+
+var btn1 = document.getElementById("btn1");
+var btn2 = document.getElementById("btn2");
+var btn3 = document.getElementById("btn3");
+
+btn1.onclick = function () {
+  modal2.style.display = "none";
+  modal3.style.display = "none";
+
+  $("body").removeClass("modal-open");
+  $(".modal-backdrop").remove();
+};
+
+btn2.onclick = function () {
+  modal.style.display = "none";
+  modal3.style.display = "none";
+
+  $("body").removeClass("modal-open");
+  $(".modal-backdrop").remove();
+};
+
+btn3.onclick = function () {
+  modal.style.display = "none";
+  modal2.style.display = "none";
+
+  $("body").removeClass("modal-open");
+  $(".modal-backdrop").remove();
+};
+
+//===============================================================
