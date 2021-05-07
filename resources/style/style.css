@@ -116,7 +116,7 @@ body,
 #map {
   height: 100%;
   width: 100vw;
-  }
+}
 
 .modal-backdrop {
   background-color: rgba(0, 0, 0, .0001) !important;
@@ -138,7 +138,7 @@ a.btn {
   margin-right: 0.5%;
   left: 1%;
   float: left;
-   z-index: 9997;
+  z-index: 9997;
 }
 
 .modal.modal-wide .modal-dialog {
@@ -148,7 +148,7 @@ a.btn {
 .modal-wide .modal-body {
   overflow-y: auto;
   overflow-wrap: break-word;
-  
+
 }
 
 .modal-header {
@@ -163,20 +163,17 @@ a.btn {
 .modal-content {
   margin-top: 15%;
   width: 55vh;
-  
+
 }
 
 .modal-dialog {
-margin: 3% 3% !important;
- /* max-width: fit-content !important;  */
+  margin: 3% 3% !important;
+
 }
 
-#tallModal4 .modal-dialog{
+#tallModal4 .modal-dialog {
   max-width: fit-content;
 }
-/* #kuku{
-max-width: fit-content !important;
-}; */
 
 #countries {
   border-radius: 8px;
@@ -215,7 +212,6 @@ max-width: fit-content !important;
 
 #info-container {
   margin-top: 10px;
-  /* max-width: 90%; */
 
 }
 
@@ -275,11 +271,6 @@ max-width: fit-content !important;
   text-align: center;
 }
 
-/* .newsTable{
-width: 200px !important;
-
-} */
-
 
 @media (max-width: 830px) {
   .leaflet-control-layers {
@@ -317,7 +308,7 @@ width: 200px !important;
 
   .modal-body {
     padding: 0.5rem !important;
-    
+
   }
 
   .flex {
@@ -353,47 +344,35 @@ width: 200px !important;
 
   .table {
     font-size: 0.8rem;
-    
+
   }
 
   .table td,
   .table th {
     padding: 0.3rem !important;
     vertical-align: middle !important;
-        
+
   }
-/* #kuku{
-  width:auto;
-    
-} */
 
-#news {
-  height: 45vh;
-    
-}
+  #news {
+    height: 45vh;
+
+  }
 
 
-#tallModal4 .modal-dialog{
-  width: 95%;
-}
+  #tallModal4 .modal-dialog {
+    width: 95%;
+  }
 
-#News img{
-width: 40px !important;
-height: 40px !important;
+  #News img {
+    width: 40px !important;
+    height: 40px !important;
 
-}
+  }
 
-.table #News{
-  font-size: 0.65rem;
-}
-
-/* td{
-  width: 50px !important;
-} */
-
-/* .newsTable{
-  max-width: 50vh !important;
-} */
+  .table #News {
+    font-size: 0.65rem;
+  }
 
 
 }

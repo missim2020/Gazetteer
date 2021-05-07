@@ -7,7 +7,6 @@ let latlng;
 let geojson;
 let markerCluster;
 let options;
-//let country
 
 //====get location ==================================
 function getLocation() {
@@ -130,9 +129,9 @@ function handleCountryChange(selectedCountryCode) {
         lng,
         countryShortCode,
       } = displayCountryInfo(selectedCountryCode);
-      //weather(capital)
+      weather(capital);
       wikipedia(lat, lng);
-      //exchangeRates(currency)
+      exchangeRates(currency);
       getCountryBoundingBox(countryShortCode);
     },
   });
@@ -178,9 +177,9 @@ function onCountryClick(e) {
   const { currency, capital, lat, lng, countryShortCode } = displayCountryInfo(
     clickedCountryName
   );
-  //exchangeRates(currency);
+  exchangeRates(currency);
   wikipedia(lat, lng);
-  //weather(capital);
+  weather(capital);
   putMarkerCluster();
   getCountryBoundingBox(countryShortCode);
 }
@@ -350,8 +349,8 @@ function onLoad() {
               countryShortCode,
             } = displayCountryInfo(homeCountry);
             wikipedia(lat, lng);
-            // weather(capital);
-            //exchangeRates(currency);
+            weather(capital);
+            exchangeRates(currency);
             getCountryBoundingBox(countryShortCode);
 
             geojson.resetStyle();
@@ -476,31 +475,9 @@ function markerClusters() {
     },
   });
 }
-//==============================================================
-
-//let north;
-// let kuku = document.getElementById("countries").value
-// console.log(kuku)
+//========   add more Wikipedia links as Region News  ===============================================
 
 function getCountryBoundingBox(countryShortCode) {
-  // $.ajax({
-  //   url: "resources/PHP/getCountryBoundingBox.php",
-  //   type: "POST",
-  //   dataType: "json",
-  //   data: {
-  //     countryShortCode,
-  //   },
-
-  //   success: function (result) {
-  //     console.log(result);
-
-  // if (result.status.name == "ok") {
-  // let north = result.data.geonames[0].north;
-  // let south = result.data.geonames[0].south;
-  // let west = result.data.geonames[0].west;
-  // let east = result.data.geonames[0].east;
-  //console.log(north)
-
   $.ajax({
     url: "resources/PHP/getWikipediaEntries.php",
     type: "POST",
@@ -510,8 +487,8 @@ function getCountryBoundingBox(countryShortCode) {
     },
 
     success: function (result) {
-      console.log(result);
-      //console.log(result.data.geonames[19].thumbnailImg);
+      //console.log(result);
+
       if (result.status.name == "ok") {
         let html = "";
         for (let i = 0; i < result.data.geonames.length; i++) {
@@ -550,13 +527,4 @@ function getCountryBoundingBox(countryShortCode) {
       console.log(errorThrown);
     },
   });
-  // }
-  //   },
-
-  //   error: function (jqXHR, textStatus, errorThrown) {
-  //     console.log(jqXHR);
-  //     console.log(textStatus);
-  //     console.log(errorThrown);
-  //   },
-  // });
 }
