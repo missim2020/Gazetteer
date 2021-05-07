@@ -206,7 +206,7 @@ function wikipedia(lat, lng) {
           .html(countryInfo ? countryInfo.wikipediaUrl : "-")
           .attr(
             "href",
-            countryInfo ? "https://" + countryInfo.wikipediaUrL : "#"
+            countryInfo ? "https://" + countryInfo.wikipediaUrl : "#"
           );
       }
     },
