@@ -7,6 +7,7 @@ let latlng;
 let geojson;
 let markerCluster;
 let options;
+//let country
 
 //====get location ==================================
 function getLocation() {
@@ -82,13 +83,18 @@ function displayCountryInfo(countryByAlpha2Code) {
     .filter((l) => l.name)
     .map((l) => l.name);
 
+  //country = countryData.alpha2Code
+
   return {
     lat: countryData.latlng[0],
     lng: countryData.latlng[1],
     capital: countryData.capital,
     currency: countryData.currencies[0].code,
+    countryShortCode: countryData.alpha2Code,
   };
 }
+
+//console.log(currency)
 
 //====show borders of selected country===============================
 
@@ -117,21 +123,24 @@ function handleCountryChange(selectedCountryCode) {
       });
 
       bordersToDisplay.addTo(map);
-      const { currency, capital, lat, lng } = displayCountryInfo(
-        selectedCountryCode
-      );
-      weather(capital)
+      const {
+        currency,
+        capital,
+        lat,
+        lng,
+        countryShortCode,
+      } = displayCountryInfo(selectedCountryCode);
+      //weather(capital)
       wikipedia(lat, lng);
-      exchangeRates(currency)
+      //exchangeRates(currency)
+      getCountryBoundingBox(countryShortCode);
     },
   });
 }
 
 //======highlighting the country==================================
 
-
 function highlightingCountry() {
-
   $.getJSON("resources/PHP/highlightedCountryBorders.php", function (data) {
     geojson = L.geoJSON(data, {
       style: function () {
@@ -148,8 +157,7 @@ function highlightingCountry() {
       },
     }).addTo(map);
   });
-  
- }
+}
 
 function onCountryClick(e) {
   let clickedCountryName;
@@ -167,14 +175,14 @@ function onCountryClick(e) {
     fillColor: "#71D5E4",
   });
 
-  const { currency, capital, lat, lng } = displayCountryInfo(
+  const { currency, capital, lat, lng, countryShortCode } = displayCountryInfo(
     clickedCountryName
   );
-  exchangeRates(currency);
+  //exchangeRates(currency);
   wikipedia(lat, lng);
-  weather(capital);
+  //weather(capital);
   putMarkerCluster();
-  
+  getCountryBoundingBox(countryShortCode);
 }
 
 //==== wikipedia link =========================================
@@ -330,18 +338,23 @@ function onLoad() {
           .then((res) => res.json())
           .then((result) => {
             initialize(result.data);
-            //console.log(data)
+            //console.log(result.data)
 
             document.getElementById("countries").value = homeCountry;
-            
-            const { currency, capital, lat, lng } = displayCountryInfo(
-              homeCountry
-            );
-            wikipedia(lat, lng);
-            weather(capital);
-            exchangeRates(currency);
 
-           geojson.resetStyle();
+            const {
+              currency,
+              capital,
+              lat,
+              lng,
+              countryShortCode,
+            } = displayCountryInfo(homeCountry);
+            wikipedia(lat, lng);
+            // weather(capital);
+            //exchangeRates(currency);
+            getCountryBoundingBox(countryShortCode);
+
+            geojson.resetStyle();
             if (bordersToDisplay) {
               bordersToDisplay.clearLayers();
               handleCountryChange(homeCountry);
@@ -356,7 +369,6 @@ function onLoad() {
             } else {
               markerClusters();
             }
-           
           })
           .catch((err) => console.log("Error:", err));
       }
@@ -449,8 +461,8 @@ function markerClusters() {
     success: function (airports_list) {
       //console.log(airports_list)
       airports_list = JSON.parse(airports_list);
-      for (var i = 0; i < airports_list.length; i++) {
-        var popup =
+      for (let i = 0; i < airports_list.length; i++) {
+        let popup =
           airports_list[i].name + "<br/><b>City:</b> " + airports_list[i].city;
 
         let m = L.marker([airports_list[i].lat, airports_list[i].lng], {
@@ -465,3 +477,86 @@ function markerClusters() {
   });
 }
 //==============================================================
+
+//let north;
+// let kuku = document.getElementById("countries").value
+// console.log(kuku)
+
+function getCountryBoundingBox(countryShortCode) {
+  // $.ajax({
+  //   url: "resources/PHP/getCountryBoundingBox.php",
+  //   type: "POST",
+  //   dataType: "json",
+  //   data: {
+  //     countryShortCode,
+  //   },
+
+  //   success: function (result) {
+  //     console.log(result);
+
+  // if (result.status.name == "ok") {
+  // let north = result.data.geonames[0].north;
+  // let south = result.data.geonames[0].south;
+  // let west = result.data.geonames[0].west;
+  // let east = result.data.geonames[0].east;
+  //console.log(north)
+
+  $.ajax({
+    url: "resources/PHP/getWikipediaEntries.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      countryShortCode,
+    },
+
+    success: function (result) {
+      console.log(result);
+      //console.log(result.data.geonames[19].thumbnailImg);
+      if (result.status.name == "ok") {
+        let html = "";
+        for (let i = 0; i < result.data.geonames.length; i++) {
+          html += "<tr>";
+          html += "<td>";
+          html += result.data.geonames[i].summary + "<br>";
+
+          html +=
+            "<a href='https://" +
+            result.data.geonames[i].wikipediaUrl +
+            "' target='_blank'>" +
+            result.data.geonames[i].wikipediaUrl +
+            "</a>";
+
+          html += "</td>";
+          html += "<td>";
+          if (result.data.geonames[i].thumbnailImg) {
+            html +=
+              "<img src='" +
+              result.data.geonames[i].thumbnailImg +
+              "'alt='image'/>";
+          } else {
+            html +=
+              "<img src='./images/news.png' style='width:80px; height:80px'alt='image'/>";
+          }
+
+          html += "</td>";
+          html += "</tr>";
+        }
+        $("#News").html(html);
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+      console.log(textStatus);
+      console.log(errorThrown);
+    },
+  });
+  // }
+  //   },
+
+  //   error: function (jqXHR, textStatus, errorThrown) {
+  //     console.log(jqXHR);
+  //     console.log(textStatus);
+  //     console.log(errorThrown);
+  //   },
+  // });
+}

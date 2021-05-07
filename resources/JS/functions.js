@@ -130,14 +130,18 @@ function putMarkerCluster() {
 var modal = document.getElementById("tallModal");
 var modal2 = document.getElementById("tallModal2");
 var modal3 = document.getElementById("tallModal3");
+var modal4 = document.getElementById("tallModal4");
+
 
 var btn1 = document.getElementById("btn1");
 var btn2 = document.getElementById("btn2");
 var btn3 = document.getElementById("btn3");
+var btn4 = document.getElementById("btn4");
 
 btn1.onclick = function () {
   modal2.style.display = "none";
   modal3.style.display = "none";
+  modal4.style.display = "none";
 
   $("body").removeClass("modal-open");
   $(".modal-backdrop").remove();
@@ -146,6 +150,7 @@ btn1.onclick = function () {
 btn2.onclick = function () {
   modal.style.display = "none";
   modal3.style.display = "none";
+  modal4.style.display = "none";
 
   $("body").removeClass("modal-open");
   $(".modal-backdrop").remove();
@@ -154,9 +159,22 @@ btn2.onclick = function () {
 btn3.onclick = function () {
   modal.style.display = "none";
   modal2.style.display = "none";
+  modal4.style.display = "none";
+
 
   $("body").removeClass("modal-open");
   $(".modal-backdrop").remove();
 };
+
+btn4.onclick = function () {
+  modal.style.display = "none";
+  modal2.style.display = "none";
+  modal3.style.display = "none";
+
+
+  $("body").removeClass("modal-open");
+  $(".modal-backdrop").remove();
+};
+
 
 //===============================================================
