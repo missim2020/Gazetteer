@@ -118,9 +118,9 @@ function handleCountryChange(selectedCountryCode) {
       bordersToDisplay.addTo(map);
       const { currency, capital, lat, lng, countryShortCode } =
         displayCountryInfo(selectedCountryCode);
-      //weather(capital);
+      weather(capital);
       wikipedia(lat, lng);
-      // exchangeRates(currency);
+      exchangeRates(currency);
       getCountryBoundingBox(countryShortCode);
     },
   });
@@ -167,9 +167,9 @@ function onCountryClick(e) {
 
   const { currency, capital, lat, lng, countryShortCode } =
     displayCountryInfo(clickedCountryName);
-  // exchangeRates(currency);
+  exchangeRates(currency);
   wikipedia(lat, lng);
-  //weather(capital);
+ weather(capital);
   putMarkerCluster();
   getCountryBoundingBox(countryShortCode);
 }
@@ -221,7 +221,7 @@ function weather(capital) {
     },
 
     success: function (result) {
-      console.log(result);
+      //console.log(result);
 
       if (result.status.name == "ok") {
         $("#city").html(result.data.city.name);
@@ -283,7 +283,7 @@ function exchangeRates(currency) {
     },
 
     success: function (result) {
-      console.log(result);
+      //console.log(result);
 
       if (result.status.name == "ok") {
         $("#currencyName").html(currency);
@@ -353,8 +353,8 @@ function onLoad() {
             const { currency, capital, lat, lng, countryShortCode } =
               displayCountryInfo(homeCountry);
             wikipedia(lat, lng);
-            //weather(capital);
-            // exchangeRates(currency);
+            weather(capital);
+            exchangeRates(currency);
             getCountryBoundingBox(countryShortCode);
 
             geojson.resetStyle();
