@@ -22,7 +22,7 @@ getLocation();
 // ===List of countries ===========================
 
 function listOfCountries() {
-  $.getJSON("resources/PHP/listOfCountries.php", function (data) {
+  $.getJSON("resources/php/listOfCountries.php", function (data) {
     //console.log(data)
     const countriesList = document.getElementById("countries");
     options = "";
@@ -37,12 +37,6 @@ function listOfCountries() {
     });
 
     countriesList.innerHTML = options;
-
-    var firstOption = $("#countries option:first");
-    var nextOptions = $("#countries option:not(:first)").sort(function (a, b) {
-      return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
-    });
-    $("#countries").html(nextOptions).prepend(firstOption);
   });
 }
 
@@ -57,34 +51,35 @@ function displayCountryInfo(countryByAlpha2Code) {
     (country) => country.alpha2Code === countryByAlpha2Code
   );
   //console.log(countryData);
+
   document.querySelector("#flag-container img").src = countryData.flag;
   document.querySelector(
     "#flag-container img"
   ).alt = `Flag of ${countryData.name}`;
+
   document.getElementById("country-name").innerHTML = countryData.name;
   document.getElementById("capital").innerHTML = countryData.capital;
   document.getElementById(
     "dialing-code"
   ).innerHTML = `+${countryData.callingCodes[0]}`;
-  document.getElementById(
-    "population"
-  ).innerHTML = countryData.population.toLocaleString("en-US");
+  document.getElementById("population").innerHTML =
+    countryData.population.toLocaleString("en-US");
   document.getElementById("currencies").innerHTML = countryData.currencies
     .filter((c) => c.name)
     .map((c) => `${c.name} (${c.code})`)
     .join(", ");
   document.getElementById("region").innerHTML = countryData.region;
 
-  document.getElementById("area").innerHTML = `${countryData.area} sq.km`;
-  document.getElementById("timeZone").innerHTML = countryData.timezones;
+  document.getElementById(
+    "area"
+  ).innerHTML = `${countryData.area.toLocaleString("en-US")} km<sup>2</sup>`;
+  // document.getElementById("timeZone").innerHTML = countryData.timezones;
   document.getElementById("borders").innerHTML = countryData.borders;
   document.getElementById("languages").innerHTML = countryData.languages
     .filter((l) => l.name)
     .map((l) => l.name);
 
-  //country = countryData.alpha2Code
-
-  return {
+    return {
     lat: countryData.latlng[0],
     lng: countryData.latlng[1],
     capital: countryData.capital,
@@ -93,15 +88,13 @@ function displayCountryInfo(countryByAlpha2Code) {
   };
 }
 
-//console.log(currency)
-
 //====show borders of selected country===============================
 
 function handleCountryChange(selectedCountryCode) {
   let value = $("#countries").val();
 
   $.ajax({
-    url: "resources/PHP/borders.php",
+    url: "resources/php/borders.php",
     type: "POST",
     data: {
       value: value,
@@ -110,6 +103,7 @@ function handleCountryChange(selectedCountryCode) {
       //console.log(country)
 
       bordersToDisplay = L.geoJSON(JSON.parse(country), {
+        
         style: function () {
           return {
             color: "white",
@@ -122,16 +116,11 @@ function handleCountryChange(selectedCountryCode) {
       });
 
       bordersToDisplay.addTo(map);
-      const {
-        currency,
-        capital,
-        lat,
-        lng,
-        countryShortCode,
-      } = displayCountryInfo(selectedCountryCode);
-      weather(capital);
+      const { currency, capital, lat, lng, countryShortCode } =
+        displayCountryInfo(selectedCountryCode);
+      //weather(capital);
       wikipedia(lat, lng);
-      exchangeRates(currency);
+      // exchangeRates(currency);
       getCountryBoundingBox(countryShortCode);
     },
   });
@@ -140,7 +129,7 @@ function handleCountryChange(selectedCountryCode) {
 //======highlighting the country==================================
 
 function highlightingCountry() {
-  $.getJSON("resources/PHP/highlightedCountryBorders.php", function (data) {
+  $.getJSON("resources/php/highlightedCountryBorders.php", function (data) {
     geojson = L.geoJSON(data, {
       style: function () {
         return {
@@ -168,18 +157,19 @@ function onCountryClick(e) {
 
   let layer = e.target;
 
+  //console.log(layer)
+
   layer.setStyle({
     weight: 2,
     color: "#00B6BC",
     fillColor: "#71D5E4",
   });
 
-  const { currency, capital, lat, lng, countryShortCode } = displayCountryInfo(
-    clickedCountryName
-  );
-  exchangeRates(currency);
+  const { currency, capital, lat, lng, countryShortCode } =
+    displayCountryInfo(clickedCountryName);
+  // exchangeRates(currency);
   wikipedia(lat, lng);
-  weather(capital);
+  //weather(capital);
   putMarkerCluster();
   getCountryBoundingBox(countryShortCode);
 }
@@ -188,7 +178,7 @@ function onCountryClick(e) {
 
 function wikipedia(lat, lng) {
   $.ajax({
-    url: "resources/PHP/wikipedia.php",
+    url: "resources/php/wikipedia.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -223,7 +213,7 @@ function wikipedia(lat, lng) {
 
 function weather(capital) {
   $.ajax({
-    url: "resources/PHP/openweather.php",
+    url: "resources/php/openweather.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -231,7 +221,7 @@ function weather(capital) {
     },
 
     success: function (result) {
-      //console.log(result);
+      console.log(result);
 
       if (result.status.name == "ok") {
         $("#city").html(result.data.city.name);
@@ -239,17 +229,24 @@ function weather(capital) {
           getWeatherIcon(result.data.list[0].weather[0].id)
         );
         $("#description").html(result.data.list[0].weather[0].description);
-        $("#temp").html(result.data.list[0].main.temp + "<small> ℃</small>");
-        $("#pressure").html(result.data.list[0].main.pressure + " hPa");
+        $("#temp").html(result.data.list[0].main.temp + " ℃");
         $("#humidity").html(result.data.list[0].main.humidity + " %");
-        $("#wind_speed").html(result.data.list[0].wind.speed + " meter/sec");
+
+        let windSpeed = result.data.list[0].wind.speed;
+        let convertedwindSpeed = Math.round((windSpeed * 18) / 5);
+
+        $("#wind_speed").html(convertedwindSpeed + " km/h");
         $("#clouds").html(result.data.list[0].clouds.all + " %");
 
         let html = "";
         for (let i = 8; i < result.data.cnt; i += 8) {
+         
+          let date = new Date(result.data.list[i].dt_txt);
+          newDate = date.toDateString();
+          
           html += "<tr>";
           html += "<td>";
-          html += result.data.list[i].dt_txt;
+          html += newDate; 
           html += "</td>";
           html += "<td>";
           html += result.data.list[i].weather[0].description;
@@ -276,8 +273,9 @@ function weather(capital) {
 //==== exchange rates =============================================
 
 function exchangeRates(currency) {
+  
   $.ajax({
-    url: "resources/PHP/exchangeRates.php",
+    url: "resources/php/exchangeRates.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -285,7 +283,7 @@ function exchangeRates(currency) {
     },
 
     success: function (result) {
-      //console.log(result);
+      console.log(result);
 
       if (result.status.name == "ok") {
         $("#currencyName").html(currency);
@@ -293,13 +291,24 @@ function exchangeRates(currency) {
 
         let html = "";
         for (let rate in result.data.rates) {
+          //console.log(rate)
           html += "<tr>";
+          html += "<td>";
+
+          for (let i in nameOfCurrency) {
+            if (rate === i) {
+              html += nameOfCurrency[i];
+            }
+          }
+
+          html += "</td>";
           html += "<td>";
           html += rate;
           html += "</td>";
           html += "<td>";
-          html += result.data.rates[rate];
+          html += result.data.rates[rate].toFixed(2);
           html += "</td>";
+
           html += "</tr>";
         }
         $("#exchange-rates").html(html);
@@ -318,7 +327,7 @@ function exchangeRates(currency) {
 
 function onLoad() {
   $.ajax({
-    url: "resources/PHP/findPlaceNearby.php",
+    url: "resources/php/findPlaceNearby.php",
     type: "GET",
     dataType: "json",
     data: {
@@ -333,7 +342,7 @@ function onLoad() {
         //console.log(result);
         listOfCountries();
 
-        fetch("resources/PHP/getCountryInfo.php")
+        fetch("resources/php/getCountryInfo.php")
           .then((res) => res.json())
           .then((result) => {
             initialize(result.data);
@@ -341,16 +350,11 @@ function onLoad() {
 
             document.getElementById("countries").value = homeCountry;
 
-            const {
-              currency,
-              capital,
-              lat,
-              lng,
-              countryShortCode,
-            } = displayCountryInfo(homeCountry);
+            const { currency, capital, lat, lng, countryShortCode } =
+              displayCountryInfo(homeCountry);
             wikipedia(lat, lng);
-            weather(capital);
-            exchangeRates(currency);
+            //weather(capital);
+            // exchangeRates(currency);
             getCountryBoundingBox(countryShortCode);
 
             geojson.resetStyle();
@@ -440,9 +444,12 @@ function showError(error) {
 //=======  marker Clusters===========================
 
 function markerClusters() {
-  let icon = L.icon({
-    iconUrl: "images/icon1.png",
-    iconSize: [40, 40],
+
+  let icon = L.ExtraMarkers.icon({
+    icon: "fa-plane",
+    markerColor: "blue-dark",
+    shape: "circle",
+    prefix: "fa",
   });
 
   markerCluster = L.markerClusterGroup();
@@ -452,7 +459,7 @@ function markerClusters() {
   //console.log(text)
 
   $.ajax({
-    url: "resources/PHP/airports.php",
+    url: "resources/php/airports.php",
     type: "POST",
     data: {
       text: text,
@@ -479,7 +486,7 @@ function markerClusters() {
 
 function getCountryBoundingBox(countryShortCode) {
   $.ajax({
-    url: "resources/PHP/getWikipediaEntries.php",
+    url: "resources/php/getWikipediaEntries.php",
     type: "POST",
     dataType: "json",
     data: {

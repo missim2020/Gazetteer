@@ -1,5 +1,5 @@
 <?php
-
+$executionStartTime = microtime(true);
 
 $text= $_POST['text'];
 
@@ -30,6 +30,17 @@ foreach ($json_decoded as $feature) {
         
  
  };
+
+//  $output['status']['code'] = "200";
+//  $output['status']['name'] = "ok";
+//  $output['status']['description'] = "success";
+//  //$output['status']['executedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
+//  //$output['data'] = JSON.parse($airports_list);
+
+//  header('Content-Type: application/json; charset=UTF-8');
+
+
+
  $json_encoded = json_encode($airports_list);
  
   

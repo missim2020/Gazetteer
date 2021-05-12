@@ -15,8 +15,7 @@ function setMap() {
       maxZoom: 16,
     }
   );
-  geoWorld.addTo(map);
-
+  
   const osm = L.tileLayer(
     "https://tile.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey=d68d08608ba94b76bfb4e2b1ac603e92",
     {
@@ -26,7 +25,7 @@ function setMap() {
       maxZoom: 22,
     }
   );
-
+  osm.addTo(map);
   const night = L.tileLayer(
     "https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}",
     {
@@ -44,53 +43,59 @@ function setMap() {
     }
   );
 
-  const googleStreets = L.tileLayer(
-    "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-    {
-      maxZoom: 20,
-      subdomains: ["mt0", "mt1", "mt2", "mt3"],
-    }
-  );
-
-  const googleSat = L.tileLayer(
-    "http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-    {
-      maxZoom: 20,
-      subdomains: ["mt0", "mt1", "mt2", "mt3"],
-    }
-  );
-
   //============layer controller=======================================
 
   const baseMaps = {
     osm: osm,
     GeoWorld: geoWorld,
     Night: night,
-    "Google Streets": googleStreets,
-    "Google Satelite": googleSat,
+    
   };
 
-  let homeIcon = L.icon({
-    iconUrl: "images/home.png",
-    iconSize: [40, 40],
-  });
-
   L.control.layers(baseMaps).addTo(map);
-  L.marker(latlng, { icon: homeIcon }).addTo(map);
-
+  
   L.control
     .zoom({
-      position: "bottomright",
+      position: "topleft",
     })
     .addTo(map);
 
+  let btn1 = L.easyButton(
+    '<img id="btn1" data-target="#tallModal" src="./images/btn11.png">',
+    function () {
+      $("#tallModal").modal("show");
+    },
+    "Country information"
+  );
+  btn1.addTo(map);
 
-  }
+  let btn2 = L.easyButton(
+    '<img id="btn2" data-target="#tallModal2" src="./images/btn22.png">',
+    function () {
+      $("#tallModal2").modal("show");
+    },
+    "Weather"
+  );
+  btn2.addTo(map);
 
-  
+  let btn3 = L.easyButton(
+    '<img id="btn3" data-target="#tallModal3" src="./images/btn33.png">',
+    function () {
+      $("#tallModal3").modal("show");
+    },
+    "Exchange rates"
+  );
+  btn3.addTo(map);
 
-
-
+  let btn4 = L.easyButton(
+    '<img id="btn4" data-target="#tallModal4" src="./images/btn44.png">',
+    function () {
+      $("#tallModal4").modal("show");
+    },
+    "Region news"
+  );
+  btn4.addTo(map);
+}
 
 //============================weather icon======================
 
@@ -125,56 +130,175 @@ function putMarkerCluster() {
   //}
 }
 
-//=====  modals ==========================================================
-
-var modal = document.getElementById("tallModal");
-var modal2 = document.getElementById("tallModal2");
-var modal3 = document.getElementById("tallModal3");
-var modal4 = document.getElementById("tallModal4");
-
-
-var btn1 = document.getElementById("btn1");
-var btn2 = document.getElementById("btn2");
-var btn3 = document.getElementById("btn3");
-var btn4 = document.getElementById("btn4");
-
-btn1.onclick = function () {
-  modal2.style.display = "none";
-  modal3.style.display = "none";
-  modal4.style.display = "none";
-
-  $("body").removeClass("modal-open");
-  $(".modal-backdrop").remove();
+//=======   currencies names  =======================================================
+let nameOfCurrency = {
+  AED: "United Arab Emirates Dirham",
+  AFN: "Afghan Afghani",
+  ALL: "Albanian Lek",
+  AMD: "Armenian Dram",
+  ANG: "Netherlands Antillean Guilder",
+  AOA: "Angolan Kwanza",
+  ARS: "Argentine Peso",
+  AUD: "Australian Dollar",
+  AWG: "Aruban Florin",
+  AZN: "Azerbaijani Manat",
+  BAM: "Bosnia-Herzegovina Convertible Mark",
+  BBD: "Barbadian Dollar",
+  BDT: "Bangladeshi Taka",
+  BGN: "Bulgarian Lev",
+  BHD: "Bahraini Dinar",
+  BIF: "Burundian Franc",
+  BMD: "Bermudan Dollar",
+  BND: "Brunei Dollar",
+  BOB: "Bolivian Boliviano",
+  BRL: "Brazilian Real",
+  BSD: "Bahamian Dollar",
+  BTC: "Bitcoin",
+  BTN: "Bhutanese Ngultrum",
+  BWP: "Botswanan Pula",
+  BYR: "Belarusian Ruble",
+  BZD: "Belize Dollar",
+  CAD: "Canadian Dollar",
+  CDF: "Congolese Franc",
+  CHF: "Swiss Franc",
+  CLF: "Chilean Unit of Account (UF)",
+  CLP: "Chilean Peso",
+  CNY: "Chinese Yuan",
+  COP: "Colombian Peso",
+  CRC: "Costa Rican Colón",
+  CUC: "Cuban Convertible Peso",
+  CUP: "Cuban Peso",
+  CVE: "Cape Verdean Escudo",
+  CZK: "Czech Republic Koruna",
+  DJF: "Djiboutian Franc",
+  DKK: "Danish Krone",
+  DOP: "Dominican Peso",
+  DZD: "Algerian Dinar",
+  EGP: "Egyptian Pound",
+  ERN: "Eritrean Nakfa",
+  ETB: "Ethiopian Birr",
+  EUR: "Euro",
+  FJD: "Fijian Dollar",
+  FKP: "Falkland Islands Pound",
+  GBP: "British Pound Sterling",
+  GEL: "Georgian Lari",
+  GGP: "Guernsey Pound",
+  GHS: "Ghanaian Cedi",
+  GIP: "Gibraltar Pound",
+  GMD: "Gambian Dalasi",
+  GNF: "Guinean Franc",
+  GTQ: "Guatemalan Quetzal",
+  GYD: "Guyanaese Dollar",
+  HKD: "Hong Kong Dollar",
+  HNL: "Honduran Lempira",
+  HRK: "Croatian Kuna",
+  HTG: "Haitian Gourde",
+  HUF: "Hungarian Forint",
+  IDR: "Indonesian Rupiah",
+  ILS: "Israeli New Sheqel",
+  IMP: "Manx pound",
+  INR: "Indian Rupee",
+  IQD: "Iraqi Dinar",
+  IRR: "Iranian Rial",
+  ISK: "Icelandic Króna",
+  JEP: "Jersey Pound",
+  JMD: "Jamaican Dollar",
+  JOD: "Jordanian Dinar",
+  JPY: "Japanese Yen",
+  KES: "Kenyan Shilling",
+  KGS: "Kyrgystani Som",
+  KHR: "Cambodian Riel",
+  KMF: "Comorian Franc",
+  KPW: "North Korean Won",
+  KRW: "South Korean Won",
+  KWD: "Kuwaiti Dinar",
+  KYD: "Cayman Islands Dollar",
+  KZT: "Kazakhstani Tenge",
+  LAK: "Laotian Kip",
+  LBP: "Lebanese Pound",
+  LKR: "Sri Lankan Rupee",
+  LRD: "Liberian Dollar",
+  LSL: "Lesotho Loti",
+  LTL: "Lithuanian Litas",
+  LVL: "Latvian Lats",
+  LYD: "Libyan Dinar",
+  MAD: "Moroccan Dirham",
+  MDL: "Moldovan Leu",
+  MGA: "Malagasy Ariary",
+  MKD: "Macedonian Denar",
+  MMK: "Myanma Kyat",
+  MNT: "Mongolian Tugrik",
+  MOP: "Macanese Pataca",
+  MRO: "Mauritanian Ouguiya",
+  MUR: "Mauritian Rupee",
+  MVR: "Maldivian Rufiyaa",
+  MWK: "Malawian Kwacha",
+  MXN: "Mexican Peso",
+  MYR: "Malaysian Ringgit",
+  MZN: "Mozambican Metical",
+  NAD: "Namibian Dollar",
+  NGN: "Nigerian Naira",
+  NIO: "Nicaraguan Córdoba",
+  NOK: "Norwegian Krone",
+  NPR: "Nepalese Rupee",
+  NZD: "New Zealand Dollar",
+  OMR: "Omani Rial",
+  PAB: "Panamanian Balboa",
+  PEN: "Peruvian Nuevo Sol",
+  PGK: "Papua New Guinean Kina",
+  PHP: "Philippine Peso",
+  PKR: "Pakistani Rupee",
+  PLN: "Polish Zloty",
+  PYG: "Paraguayan Guarani",
+  QAR: "Qatari Rial",
+  RON: "Romanian Leu",
+  RSD: "Serbian Dinar",
+  RUB: "Russian Ruble",
+  RWF: "Rwandan Franc",
+  SAR: "Saudi Riyal",
+  SBD: "Solomon Islands Dollar",
+  SCR: "Seychellois Rupee",
+  SDG: "Sudanese Pound",
+  SEK: "Swedish Krona",
+  SGD: "Singapore Dollar",
+  SHP: "Saint Helena Pound",
+  SLL: "Sierra Leonean Leone",
+  SOS: "Somali Shilling",
+  SRD: "Surinamese Dollar",
+  STD: "São Tomé and Príncipe Dobra",
+  SVC: "Salvadoran Colón",
+  SYP: "Syrian Pound",
+  SZL: "Swazi Lilangeni",
+  THB: "Thai Baht",
+  TJS: "Tajikistani Somoni",
+  TMT: "Turkmenistani Manat",
+  TND: "Tunisian Dinar",
+  TOP: "Tongan Paʻanga",
+  TRY: "Turkish Lira",
+  TTD: "Trinidad and Tobago Dollar",
+  TWD: "New Taiwan Dollar",
+  TZS: "Tanzanian Shilling",
+  UAH: "Ukrainian Hryvnia",
+  UGX: "Ugandan Shilling",
+  USD: "United States Dollar",
+  UYU: "Uruguayan Peso",
+  UZS: "Uzbekistan Som",
+  VEF: "Venezuelan Bolívar Fuerte",
+  VND: "Vietnamese Dong",
+  VUV: "Vanuatu Vatu",
+  WST: "Samoan Tala",
+  XAF: "CFA Franc BEAC",
+  XAG: "Silver (troy ounce)",
+  XAU: "Gold (troy ounce)",
+  XCD: "East Caribbean Dollar",
+  XDR: "Special Drawing Rights",
+  XOF: "CFA Franc BCEAO",
+  XPF: "CFP Franc",
+  YER: "Yemeni Rial",
+  ZAR: "South African Rand",
+  ZMK: "Zambian Kwacha (pre-2013)",
+  ZMW: "Zambian Kwacha",
+  ZWL: "Zimbabwean Dollar",
 };
 
-btn2.onclick = function () {
-  modal.style.display = "none";
-  modal3.style.display = "none";
-  modal4.style.display = "none";
-
-  $("body").removeClass("modal-open");
-  $(".modal-backdrop").remove();
-};
-
-btn3.onclick = function () {
-  modal.style.display = "none";
-  modal2.style.display = "none";
-  modal4.style.display = "none";
-
-
-  $("body").removeClass("modal-open");
-  $(".modal-backdrop").remove();
-};
-
-btn4.onclick = function () {
-  modal.style.display = "none";
-  modal2.style.display = "none";
-  modal3.style.display = "none";
-
-
-  $("body").removeClass("modal-open");
-  $(".modal-backdrop").remove();
-};
-
-
-//===============================================================
+//====================================================

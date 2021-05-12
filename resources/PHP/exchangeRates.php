@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 	$executionStartTime = microtime(true) / 1000;
 
 		
-	$url='http://api.exchangeratesapi.io/v1/latest?base='.$_REQUEST['base'].'&access_key=6cf0d8f2f45b21a94ed1772ba9901513';
+	 //$url='http://api.exchangeratesapi.io/v1/latest?base='.$_REQUEST['base'].'&access_key=6cf0d8f2f45b21a94ed1772ba9901513';
 
     
 		$ch = curl_init();

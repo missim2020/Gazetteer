@@ -5,15 +5,20 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
-	<link rel="stylesheet" href="resources/style/style.css" />
+
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="resources/css/style.css" />
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
-	<link rel="stylesheet" href="./vendors/Bootstrap/bootstrap.css" />
-	<link rel="stylesheet" href="./vendors/Leaflet/leaflet.css" />
-	<script src="./vendors/Leaflet/leaflet.js"></script>
-	<link rel="stylesheet" href="./vendors/MarkerCluster/MarkerCluster.css" />
-	<link rel="stylesheet" href="./vendors/MarkerCluster/MarkerCluster.Default.css" />
-	<script src="./vendors/MarkerCluster/leaflet.markercluster.js"></script>
-	<script src="./vendors/JQuery3.6/Jquery.js"></script>
+	<link rel="stylesheet" href="./vendors/bootstrap/bootstrap.css" />
+	<link rel="stylesheet" href="./vendors/leaflet/leaflet.css" />
+	<script src="./vendors/leaflet/leaflet.js"></script>
+	<link rel="stylesheet" href="./vendors/markerCluster/MarkerCluster.css" />
+	<link rel="stylesheet" href="./vendors/markerCluster/MarkerCluster.Default.css" />
+	<script src="./vendors/markerCluster/leaflet.markercluster.js"></script>
+	<script src="./vendors/jquery3.6/Jquery.js"></script>
+	<link rel="stylesheet" href="./vendors/easy-button/easy-button.css" />
+	<link rel="stylesheet" href="./vendors/extra-markers/leaflet.extra-markers.min.css" />
 
 	<!--===========================================================-->
 	<title>Gazetteer</title>
@@ -47,50 +52,110 @@
 
 		</div>
 
-
-		<a data-toggle="modal" data-target="#tallModal" id="btn1" class="btn btn-light">Info</a>
-
-		<a data-toggle="modal" data-target="#tallModal2" id="btn2" class="btn btn-light">Weather</a>
-
-		<a data-toggle="modal" data-target="#tallModal3" id="btn3" class="btn btn-light">Exchange rates</a>
-
-		<a data-toggle="modal" data-target="#tallModal4" id="btn4" class="btn btn-light">Region News</a>
-
 		<div id="tallModal" class="modal modal-wide fade" tabindex="-1">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
+
+						<div class="flex">
+							<div class="country-name">
+								<h2 id="country-name"></h2>
+							</div>
+							<div id="flag-container">
+								<img src="" alt="" />
+							</div>
+						</div>
 						<button type="button" class="btn-light close" data-dismiss="modal" aria-hidden="true">
 							&times;
 						</button>
 					</div>
 					<div class="modal-body">
-						<div id="main-container" class="cont">
-							<div class="flex">
-								<div class="country-name">
-									<h2 id="country-name"></h2>
-								</div>
-								<div id="flag-container">
-									<img src="" alt="" />
-								</div>
-							</div>
-							<div id="info-container">
-								<p><b>Capital:</b> <span id="capital"></span></p>
-								<p><b>Dialing Code:</b> <span id="dialing-code"></span></p>
-								<p><b>Population:</b> <span id="population"></span></p>
-								<p><b>Currencies:</b> <span id="currencies"></span></p>
-								<p><b>Region:</b> <span id="region"></span></p>
-								<p><b>Area:</b> <span id="area"></span></p>
-								<p><b>Time Zone:</b> <span id="timeZone"></span></p>
-								<p><b>Borders:</b> <span id="borders"></span></p>
-								<p><b>Languages:</b> <span id="languages"></span></p>
-								<p class="summary">
-									<u><b>Summary:</b></u><br />
-									<span id="summary"></span>
-								</p>
-								<a id="link" href="" target="_blank"></a>
-							</div>
-						</div>
+
+						<table class="table table-striped">
+							<tbody id="countryInfo">
+								<tr>
+									<td>
+										<p><b>Capital</b></p>
+									</td>
+									<td>
+										<p id="capital"></p>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<p><b>Dialing code</b></p>
+									</td>
+									<td>
+										<p id="dialing-code"></p>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<p><b>Population</b></p>
+									</td>
+									<td>
+										<p id="population"></p>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<p><b>Currency</b></p>
+									</td>
+									<td>
+										<p id="currencies"></p>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<p><b>Region</b></p>
+									</td>
+									<td>
+										<p id="region"></p>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<p><b>Area</b></p>
+									</td>
+									<td>
+										<p id="area"></p>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<p><b>Borders</b></p>
+									</td>
+									<td>
+										<p id="borders"></p>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<p><b>Languages</b></p>
+									</td>
+									<td>
+										<p id="languages"></p>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<p id="summary"><u><b>Summary:</b></u><br /></p>
+
+									</td>
+
+
+								</tr>
+								<tr>
+									<td colspan="2"><a id="link" href="" target="_blank"></a>
+
+									</td>
+
+								</tr>
+
+							</tbody>
+
+						</table>
+
 					</div>
 
 				</div>
@@ -101,33 +166,61 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
+						<h2>Weather in <span id="city"></span></h2>
 						<button type="button" class="btn-light close" data-dismiss="modal" aria-hidden="true">
 							&times;
 						</button>
 					</div>
 					<div class="modal-body">
 						<div id="weather">
-							<h2>Weather in <span id="city"></span></h2>
-							<h3>Today</h3>
-							<div id="weatherIcon">
-								<img id="icon" src="" />
-							</div>
-							<p>
-								<b><span id="description"></span></b>
-							</p>
-							<p><b>temperature:</b> <span id="temp"></span></p>
-							<p><b>Pressure:</b> <span id="pressure"></span></p>
-							<p><b>Humidity:</b> <span id="humidity"></span></p>
-							<p><b>wind Speed:</b> <span id="wind_speed"></span></p>
-							<p><b>claudiness:</b> <span id="clouds"></span></p>
+							<table class="table table-sm table-bordered">
+								<th colspan="2" class="table-active">
+									<h3>Today</h3>
+								</th>
+								<tbody>
+									<tr>
+										<td rowspan="4">
+											<div id="weatherIcon">
+												<img id="icon" src="" />
 
-							<h3>Weather Forecast</h3>
+												<p>
+													<b><span id="description"></span></b>
+												</p>
+											</div>
+										</td>
+										<td>
+											<p><b>Temperature:</b><br> <span id="temp"></span></p>
+										</td>
+									</tr>
+									<tr>
+
+										<td>
+											<p><b>Humidity:</b><br> <span id="humidity"></span></p>
+										</td>
+									</tr>
+									<tr>
+
+										<td>
+											<p><b>Wind speed:</b><br> <span id="wind_speed"></span></p>
+										</td>
+									</tr>
+									<tr>
+
+										<td>
+											<p><b>Cloudiness:</b><br> <span id="clouds"></span></p>
+										</td>
+									</tr>
+
+								</tbody>
+							</table>
+
 							<table class="table">
 								<thead>
 									<tr>
-										<th>Time</th>
-										<th>Weather</th>
-										<th>Temp</th>
+										<th colspan="3" class="table-active">
+											<h3>Weather Forecast</h3>
+										</th>
+
 									</tr>
 								</thead>
 								<tbody id="forecast"></tbody>
@@ -142,26 +235,30 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="btn-light close" data-dismiss="modal" aria-hidden="true">
-							&times;
-						</button>
+						<div>
+							<button type="button" class="btn-light close" data-dismiss="modal" aria-hidden="true">
+								&times;
+							</button>
+							<h3>Exchange rates based on <span id="currencyName"></span></h3>
+						</div>
+						<p><b>Date: <span id="date"></span></b></p>
+
+
+
 					</div>
 					<div class="modal-body">
-						<div id="exchange">
-							<h3>Exchange rates based on <span id="currencyName"></span></h3>
-							<p>
-								<b>Date: <span id="date"></span></b>
-							</p>
-							<table class="table">
-								<thead>
-									<tr>
-										<th>Currency</th>
-										<th>Exchange Rate</th>
-									</tr>
-								</thead>
-								<tbody id="exchange-rates"></tbody>
-							</table>
-						</div>
+
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Currency name</th>
+									<th>Abbreviation</th>
+									<th>Exchange Rate</th>
+								</tr>
+							</thead>
+							<tbody id="exchange-rates"></tbody>
+						</table>
+
 					</div>
 				</div>
 			</div>
@@ -171,19 +268,17 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
+						<h3>Latest News</h3>
 						<button type="button" class="btn-light close" data-dismiss="modal" aria-hidden="true">
 							&times;
 						</button>
 					</div>
 					<div class="modal-body">
-						<div id="news">
-							<h3>Latest News</h3>
+						<table class="table">
+							<tbody id="News"></tbody>
 
-							<table class="table newsTable">
-								<tbody id="News"></tbody>
+						</table>
 
-							</table>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -192,9 +287,12 @@
 	</div>
 
 	<!--=====================================================================================================================================================================================================-->
-	<script src="./vendors/Bootstrap/bootstrap.bundle.js"></script>
-	<script src="./resources/JS/map.js"></script>
-	<script src="./resources/JS/functions.js"></script>
+
+	<script src="./vendors/bootstrap/bootstrap.bundle.js"></script>
+	<script src="./resources/js/map.js"></script>
+	<script src="./resources/js/functions.js"></script>
+	<script src="./vendors/easy-button/easy-button.js"></script>
+	<script src="./vendors/extra-markers/leaflet.extra-markers.min.js"></script>
 
 	<!--==================================================================-->
 </body>
