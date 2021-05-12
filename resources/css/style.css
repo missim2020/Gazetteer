@@ -144,7 +144,8 @@ a.btn {
 
 .modal-wide .modal-body {
   height: 60vh;
-  overflow-y: auto;
+  overflow-y: scroll;
+  overflow-wrap: anywhere;
  
 }
 
@@ -298,9 +299,9 @@ h2 {
   margin: 0 auto;
 }
 
-#date {
+/* #date {
   display: block;
-}
+} */
 
 #btn1,
 #btn2,
@@ -398,22 +399,22 @@ h2 {
     vertical-align: middle !important;
 
   }
-
+/* 
   #news {
     height: 45vh;
 
-  }
+  } */
 
 
-  #tallModal4 .modal-content {
+  /* #tallModal4 .modal-content {
     margin-top: 72%;
     height: 50vh;
-  }
+  } */
 
-  #tallModal4 .modal-dialog {
+  /* #tallModal4 .modal-dialog {
     margin-left: 2% !important;
 
-  }
+  } */
 
   #News img {
     width: 40px !important;
